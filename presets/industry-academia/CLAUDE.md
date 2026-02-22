@@ -118,6 +118,58 @@ Config 주석에 사용하는 태그:
 - `[ARCH]` = 아키텍처 선택 (backbone, loss function 등)
 - `[DEPRECATED]` = 호환성 유지용 (미사용)
 
+---
+
+## Workflow Orchestration
+
+### 1. Plan Node Default
+- 3단계 이상이거나 아키텍처 결정이 필요한 작업은 **반드시 plan mode 먼저**
+- 작업 중 예상치 못한 문제가 생기면 STOP → 즉시 재계획. 억지로 밀어붙이지 말 것
+- 납품 일정이 빠듯할 때는 plan mode로 범위(scope)를 명확히 한 뒤 착수
+
+### 2. Subagent Strategy
+- 메인 컨텍스트 윈도우를 깨끗하게 유지하기 위해 **서브에이전트를 적극 활용**
+- 리서치, 탐색, 병렬 분석은 서브에이전트에 오프로드
+- 서브에이전트 하나에 한 가지 작업만 (focused execution)
+
+### 3. Self-Improvement Loop
+- **사용자의 수정/지적이 있을 때마다**: `tasks/lessons.md`에 해당 패턴을 기록
+- 세션 시작 시 `tasks/lessons.md`를 먼저 확인하여 과거 교훈 리뷰
+- 반복 검증된 패턴은 `update_notes/analysis/{주제}/_lessons.md`로 승격
+
+### 4. Verification Before Done
+- **작동을 증명하지 않은 채 완료 처리 금지**
+- "시니어 엔지니어가 이 코드를 승인할 것인가?" 자문
+- 납품물은 데모/리포트 실행까지 확인 후 완료 처리
+
+### 5. Demand Elegance (Balanced)
+- 비자명한 변경에는 "더 우아한 방법이 있지 않은가?" 자문
+- 단순·명백한 수정에는 생략 — 과잉 설계 금지
+- 납품 데드라인 고려: 우아함보다 납품 기한이 우선일 수 있음
+
+### 6. Autonomous Bug Fixing
+- 버그 리포트가 주어지면: **그냥 고친다**. 손을 잡아달라고 하지 말 것
+- 로그, 에러, 실패 테스트를 직접 분석하여 해결
+
+---
+
+## Task Management
+
+1. **Plan First**: 구현 시작 전 `tasks/todo.md`에 체크리스트 형태로 계획 작성
+2. **Verify Plan**: 구현 착수 전 계획 확인
+3. **Track Progress**: 진행하면서 완료 항목에 체크
+4. **Explain Changes**: 각 단계마다 고수준 요약 제공
+5. **Document Results**: 완료 후 `tasks/todo.md`에 결과 섹션 추가
+6. **Capture Lessons**: 수정/지적 발생 시 즉시 `tasks/lessons.md` 업데이트
+
+```
+tasks/
+├── todo.md        # 현재 세션 계획·진행·결과 (세션마다 갱신)
+└── lessons.md     # 수정·지적으로부터 추출한 누적 교훈 (영속적)
+```
+
+---
+
 ## Experiment Process
 
 실험은 반드시 아래 **6단계 프로세스**를 따른다. 템플릿: `update_notes/experiments/_TEMPLATE.md`
@@ -148,7 +200,7 @@ update_notes/experiments/YYYY-MM-DD_실험명/
 
 ## Update Notes
 
-실험, 분석, 버그픽스, 아이디어 등 유의미한 작업 시 반드시 `update_notes/` 아래에 `.md` 파일로 기록한다. **단순 누적 금지** — 주제별 계층 디렉토리로 구성.
+실험, 분석, 버그픽스, 아이디어 등 유의미한 작업 시 반드시 `update_notes/` 아래에 `.md` 파일로 기록한다.
 
 ```
 update_notes/
@@ -161,7 +213,7 @@ update_notes/
 ├── analysis/                 # 분석 + 검증된 패턴
 │   └── 주제명/
 │       ├── YYYY-MM-DD_설명.md
-│       └── _lessons.md       # 검증된 패턴 축적 (승격)
+│       └── _lessons.md       # tasks/lessons.md에서 승격된 검증 패턴
 ├── bugfix/                   # 버그 수정 기록
 ├── ideas/                    # 연구 아이디어
 ├── deliverables/             # 📦 납품물 관련 기록
@@ -176,7 +228,7 @@ update_notes/
 - 노트 간 `## 관련 노트`로 상대 경로 링크
 - 실험 → 분석 → 아이디어 → 후속 실험 흐름 추적
 - 납품물/회의록에서 관련 실험 노트 역링크
-- 반복되는 패턴이나 검증된 기법은 `analysis/{주제}/_lessons.md`로 승격하여 축적
+- 반복되는 패턴이나 검증된 기법은 `analysis/{주제}/_lessons.md`로 승격
 
 ## Deliverable Rules (납품물 관리)
 
@@ -185,9 +237,14 @@ update_notes/
 - 기업 미팅 후 `update_notes/meetings/`에 회의록 작성 (액션아이템 포함)
 - **모델 납품 시 체크리스트**: 추론 코드, 가중치 파일, 환경 설정, 입출력 스펙 문서
 
-## Coding Rules
+---
 
-- **모듈화 필수**: 새롭게 추가하는 모든 모듈/기능은 반드시 config에서 `enable: true/false`로 on/off 가능하게 구현한다. 과거 실험을 config만으로 정확히 재현할 수 있어야 한다.
+## Core Principles
+
+- **Simplicity First**: 모든 변경은 가능한 한 단순하게. 최소한의 코드에만 영향을 줄 것
+- **No Laziness**: 근본 원인을 찾아라. 임시방편 금지. 시니어 개발자 기준을 적용
+- **Minimal Impact**: 변경은 필요한 것만. 불필요한 버그 유입 방지
+- **모듈화 필수**: 새롭게 추가하는 모든 모듈/기능은 config에서 `enable: true/false`로 on/off 가능하게 구현. 과거 실험을 config만으로 정확히 재현할 수 있어야 한다.
 - **Reproducibility**: seed 고정, config 기록, 환경 명시 (requirements.txt 또는 pyproject.toml)
 - **Ablation-friendly**: 각 컴포넌트를 독립적으로 on/off 가능하게 설계
 - **기업 데이터 보안**: proprietary 데이터 경로는 `.gitignore`에 포함, 하드코딩 금지

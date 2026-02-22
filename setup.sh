@@ -63,7 +63,7 @@ mkdir -p "$TARGET"
 
 # ─── Copy base files ───────────────────────────────────────
 
-echo -e "${GREEN}[1/4]${NC} Copying base structure..."
+echo -e "${GREEN}[1/5]${NC} Copying base structure..."
 
 # CLAUDE.md — use preset version if exists, otherwise base
 if [ -f "$SOURCE_DIR/presets/$PRESET/CLAUDE.md" ]; then
@@ -102,7 +102,7 @@ fi
 
 # ─── MEMORY.md setup ──────────────────────────────────────
 
-echo -e "${GREEN}[2/4]${NC} Preparing MEMORY.md template..."
+echo -e "${GREEN}[2/5]${NC} Preparing MEMORY.md template..."
 
 # Determine project memory path
 TARGET_ABS=$(realpath "$TARGET")
@@ -130,7 +130,65 @@ fi
 
 # ─── Preset-specific extras ────────────────────────────────
 
-echo -e "${GREEN}[3/4]${NC} Applying preset-specific settings..."
+echo -e "${GREEN}[3/5]${NC} Setting up tasks/ directory..."
+
+# ─── tasks/ setup ─────────────────────────────────────────
+
+mkdir -p "$TARGET/tasks"
+
+# todo.md
+if [ ! -f "$TARGET/tasks/todo.md" ]; then
+    cat > "$TARGET/tasks/todo.md" << 'EOF'
+# Tasks — Todo
+
+<!-- 현재 세션의 작업 계획. 세션마다 새로 작성하거나 갱신. -->
+<!-- 형식: - [ ] 할 일 / - [x] 완료 -->
+
+## 현재 작업
+
+-
+
+## 계획
+
+-
+
+## 결과
+
+-
+
+## 관련 노트
+
+-
+EOF
+    echo -e "  ${GREEN}Created:${NC} tasks/todo.md"
+fi
+
+# lessons.md
+if [ ! -f "$TARGET/tasks/lessons.md" ]; then
+    cat > "$TARGET/tasks/lessons.md" << 'EOF'
+# Lessons Learned
+
+<!-- 사용자의 수정·지적으로부터 추출한 교훈을 누적 기록. -->
+<!-- 세션 시작 시 반드시 먼저 확인할 것. -->
+<!-- 반복 검증된 패턴은 update_notes/analysis/{주제}/_lessons.md 로 승격. -->
+
+## 규칙 & 패턴
+
+<!-- 형식:
+### [날짜] 교훈 제목
+발생 상황: ...
+잘못한 것: ...
+올바른 방법: ...
+-->
+
+---
+
+*아직 기록된 교훈이 없습니다. 사용자의 첫 번째 수정/지적 후 채워집니다.*
+EOF
+    echo -e "  ${GREEN}Created:${NC} tasks/lessons.md"
+fi
+
+echo -e "${GREEN}[4/5]${NC} Applying preset-specific settings..."
 
 case "$PRESET" in
     research)
@@ -152,7 +210,7 @@ esac
 
 # ─── Summary ──────────────────────────────────────────────
 
-echo -e "${GREEN}[4/4]${NC} Done!"
+echo -e "${GREEN}[5/5]${NC} Done!"
 echo ""
 echo -e "${BLUE}Created structure:${NC}"
 echo ""
