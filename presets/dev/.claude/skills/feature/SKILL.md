@@ -16,15 +16,15 @@ allowed-tools:
 기존 기능 노트:
 
 ```
-!find update_notes/features -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/features -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
 
 1. `$ARGUMENTS`에서 `<feature-name>` 파싱
    - 인자 없으면 → 기존 기능 노트 목록 출력 후 종료
-2. `update_notes/features/_TEMPLATE.md` 기반으로 새 노트 생성:
-   - 경로: `update_notes/features/YYYY-MM-DD_<feature-name>.md`
+2. `skill_graph/features/_TEMPLATE.md` 기반으로 새 노트 생성:
+   - 경로: `skill_graph/features/YYYY-MM-DD_<feature-name>.md`
    - 날짜, 기능명 자동 치환
 3. `tasks/todo.md`에 기능 구현 체크리스트 추가:
    - `## 현재 작업`에 기능명 설정

@@ -16,15 +16,15 @@ allowed-tools:
 이전 실험 목록:
 
 ```
-!find update_notes/experiments -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/experiments -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
 
 1. `$ARGUMENTS`에서 `<experiment-name>` 파싱
    - 인자 없으면 → 기존 실험 목록 출력 + 각 실험 상태(🔴/🟡/🟢) 요약
-2. `update_notes/experiments/_TEMPLATE.md` 기반으로 실험 노트 생성:
-   - 경로: `update_notes/experiments/YYYY-MM-DD_<experiment-name>.md`
+2. `skill_graph/experiments/_TEMPLATE.md` 기반으로 실험 노트 생성:
+   - 경로: `skill_graph/experiments/YYYY-MM-DD_<experiment-name>.md`
    - 실험 ID 자동 생성: `exp_YYYYMMDD_<짧은코드>`
 3. **Phase 1 (1~3단계) 작성 가이드**:
    - 문제 분석 → 가설 설정 → 실험 설정 순서대로 작성 유도

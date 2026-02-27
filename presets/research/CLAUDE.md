@@ -94,7 +94,7 @@ Testing:  Data → Features → [Core Method] → Scoring → Metrics
 - **사용자의 수정/지적이 있을 때마다**: `tasks/lessons.md`에 해당 패턴을 기록
 - 같은 실수를 반복하지 않도록 스스로 규칙을 작성
 - 세션 시작 시 `tasks/lessons.md`를 먼저 확인하여 과거 교훈 리뷰
-- 반복 검증된 패턴은 `update_notes/analysis/{주제}/_lessons.md`로 승격
+- 반복 검증된 패턴은 `skill_graph/analysis/{주제}/_lessons.md`로 승격
 
 ### 4. Verification Before Done
 - **작동을 증명하지 않은 채 완료 처리 금지**
@@ -133,7 +133,7 @@ tasks/
 
 ## Experiment Process
 
-실험은 반드시 아래 **6단계 프로세스**를 따른다. 템플릿: `update_notes/experiments/_TEMPLATE.md`
+실험은 반드시 아래 **6단계 프로세스**를 따른다. 템플릿: `skill_graph/experiments/_TEMPLATE.md`
 
 ```
 1. 문제 분석 (Problem Analysis)  → 현상 + 원인 추정 + 관련 선행 노트
@@ -152,7 +152,7 @@ tasks/
 
 **실험 디렉토리 구조:**
 ```
-update_notes/experiments/YYYY-MM-DD_실험명/
+skill_graph/experiments/YYYY-MM-DD_실험명/
 ├── report.md            # 6단계 프로세스 전체 기록
 ├── config_diff.yaml     # baseline 대비 변경된 config
 └── logs/                # 실험 로그
@@ -161,7 +161,7 @@ update_notes/experiments/YYYY-MM-DD_실험명/
 ## Update Notes
 
 ```
-update_notes/
+skill_graph/
 ├── experiments/
 │   ├── _TEMPLATE.md              # 실험 보고서 템플릿 (6단계 프로세스)
 │   └── YYYY-MM-DD_실험명/

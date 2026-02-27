@@ -10,7 +10,7 @@
 #
 # preset:
 #   base              — 최소 범용 구조 (기본값)
-#   dev               — 소프트웨어 개발 특화 (멀티에이전트 협업, 개발 중심 update_notes)
+#   dev               — 소프트웨어 개발 특화 (멀티에이전트 협업, 개발 중심 skill_graph)
 #   research          — ML/DL 연구 프로젝트 특화
 #   industry-academia — 산학과제 특화 (납품물/회의록 관리 포함)
 #
@@ -73,11 +73,11 @@ else
     cp "$SOURCE_DIR/base/CLAUDE.md" "$TARGET/CLAUDE.md"
 fi
 
-# update_notes/ structure
-if [ -d "$SOURCE_DIR/presets/$PRESET/update_notes" ]; then
-    cp -r "$SOURCE_DIR/presets/$PRESET/update_notes" "$TARGET/update_notes"
+# skill_graph/ structure
+if [ -d "$SOURCE_DIR/presets/$PRESET/skill_graph" ]; then
+    cp -r "$SOURCE_DIR/presets/$PRESET/skill_graph" "$TARGET/skill_graph"
 else
-    cp -r "$SOURCE_DIR/base/update_notes" "$TARGET/update_notes"
+    cp -r "$SOURCE_DIR/base/skill_graph" "$TARGET/skill_graph"
 fi
 
 # .claude/ directory
@@ -171,7 +171,7 @@ if [ ! -f "$TARGET/tasks/lessons.md" ]; then
 
 <!-- 사용자의 수정·지적으로부터 추출한 교훈을 누적 기록. -->
 <!-- 세션 시작 시 반드시 먼저 확인할 것. -->
-<!-- 반복 검증된 패턴은 update_notes/analysis/{주제}/_lessons.md 로 승격. -->
+<!-- 반복 검증된 패턴은 skill_graph/analysis/{주제}/_lessons.md 로 승격. -->
 
 ## 규칙 & 패턴
 
@@ -194,7 +194,7 @@ echo -e "${GREEN}[4/6]${NC} Applying preset-specific settings..."
 case "$PRESET" in
     dev)
         echo -e "  ${GREEN}+${NC} Agent Coordination Protocol (multi-agent file locks)"
-        echo -e "  ${GREEN}+${NC} Dev-oriented update_notes (features/bugfix/refactor/devops/decisions)"
+        echo -e "  ${GREEN}+${NC} Dev-oriented skill_graph (features/bugfix/refactor/devops/decisions)"
         echo -e "  ${GREEN}+${NC} Memory Management with topic files"
         echo -e "  ${GREEN}+${NC} .gitignore for .env, Prisma DB, .locks/"
         # Create .locks directory

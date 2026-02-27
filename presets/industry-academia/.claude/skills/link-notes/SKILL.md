@@ -1,6 +1,6 @@
 ---
 name: link-notes
-description: 키워드 기반으로 update_notes/ 내 노트를 자동 연결합니다
+description: 키워드 기반으로 skill_graph/ 내 노트를 자동 연결합니다
 allowed-tools:
   - Read
   - Edit
@@ -12,7 +12,7 @@ allowed-tools:
 
 **사용법**: `/link-notes [target-file]`
 
-- 인자 없음: `update_notes/` 전체 스캔 후 모든 노트 간 연결
+- 인자 없음: `skill_graph/` 전체 스캔 후 모든 노트 간 연결
 - 파일 지정: 해당 파일만 대상으로 연결
 
 ## 키워드 추출 (우선순위)
@@ -40,7 +40,7 @@ if |overlap| >= 2 → 관련 노트로 판정
 
 ## 동작 절차
 
-1. `update_notes/` 내 모든 `.md` 파일 수집 (`_TEMPLATE.md` 제외)
+1. `skill_graph/` 내 모든 `.md` 파일 수집 (`_TEMPLATE.md` 제외)
 2. 각 파일에서 키워드 추출 (3가지 소스)
 3. 모든 파일 쌍에 대해 키워드 겹침 검사
 4. 겹침 >= 2인 쌍에 대해 양방향 링크 추가

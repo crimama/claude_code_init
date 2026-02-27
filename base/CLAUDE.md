@@ -61,7 +61,7 @@ Input → Processing → Output
 ### 3. Self-Improvement Loop
 - **사용자의 수정/지적이 있을 때마다**: `tasks/lessons.md`에 해당 패턴을 기록
 - 세션 시작 시 `tasks/lessons.md`를 먼저 확인하여 과거 교훈 리뷰
-- 반복 검증된 패턴은 `update_notes/analysis/{주제}/_lessons.md`로 승격
+- 반복 검증된 패턴은 `skill_graph/analysis/{주제}/_lessons.md`로 승격
 
 ### 4. Verification Before Done
 - **작동을 증명하지 않은 채 완료 처리 금지**
@@ -98,10 +98,10 @@ tasks/
 
 ## Update Notes
 
-유의미한 작업 시 반드시 `update_notes/` 아래에 `.md` 파일로 기록한다.
+유의미한 작업 시 반드시 `skill_graph/` 아래에 `.md` 파일로 기록한다.
 
 ```
-update_notes/
+skill_graph/
 ├── experiments/
 │   ├── _TEMPLATE.md              # 실험/작업 보고서 템플릿
 │   └── YYYY-MM-DD_작업명/

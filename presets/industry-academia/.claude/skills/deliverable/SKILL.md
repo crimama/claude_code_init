@@ -14,7 +14,7 @@ allowed-tools:
 현재 납품물 목록:
 
 ```
-!find update_notes/deliverables -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/deliverables -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
@@ -25,14 +25,14 @@ allowed-tools:
 - 각 납품물에 연결된 실험 결과 수 표시
 
 ### `<deliverable-name>` → 납품물 노트 생성
-1. `update_notes/deliverables/_TEMPLATE.md` 기반으로 새 노트 생성:
-   - 경로: `update_notes/deliverables/YYYY-MM-DD_<deliverable-name>.md`
+1. `skill_graph/deliverables/_TEMPLATE.md` 기반으로 새 노트 생성:
+   - 경로: `skill_graph/deliverables/YYYY-MM-DD_<deliverable-name>.md`
 2. 사용자에게 다음 정보 요청:
    - 해당 마일스톤
    - 기한
    - 납품 요구사항
 3. 기존 실험 결과 중 포함할 항목 선택 유도:
-   - `update_notes/experiments/` 내 완료된 실험 목록 제시
+   - `skill_graph/experiments/` 내 완료된 실험 목록 제시
 4. 작성 계획(보고서 목차 등) 초안 생성
 
 ## 규칙

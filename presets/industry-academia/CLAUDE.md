@@ -135,7 +135,7 @@ Config 주석에 사용하는 태그:
 ### 3. Self-Improvement Loop
 - **사용자의 수정/지적이 있을 때마다**: `tasks/lessons.md`에 해당 패턴을 기록
 - 세션 시작 시 `tasks/lessons.md`를 먼저 확인하여 과거 교훈 리뷰
-- 반복 검증된 패턴은 `update_notes/analysis/{주제}/_lessons.md`로 승격
+- 반복 검증된 패턴은 `skill_graph/analysis/{주제}/_lessons.md`로 승격
 
 ### 4. Verification Before Done
 - **작동을 증명하지 않은 채 완료 처리 금지**
@@ -172,7 +172,7 @@ tasks/
 
 ## Experiment Process
 
-실험은 반드시 아래 **6단계 프로세스**를 따른다. 템플릿: `update_notes/experiments/_TEMPLATE.md`
+실험은 반드시 아래 **6단계 프로세스**를 따른다. 템플릿: `skill_graph/experiments/_TEMPLATE.md`
 
 ```
 1. 문제 분석 (Problem Analysis)  → 현상 + 원인 추정 + 관련 선행 노트
@@ -192,7 +192,7 @@ tasks/
 
 **실험 디렉토리 구조:**
 ```
-update_notes/experiments/YYYY-MM-DD_실험명/
+skill_graph/experiments/YYYY-MM-DD_실험명/
 ├── report.md            # 6단계 프로세스 전체 기록
 ├── config_diff.yaml     # baseline 대비 변경된 config
 └── logs/                # 실험 로그 (stdout, wandb export 등)
@@ -200,10 +200,10 @@ update_notes/experiments/YYYY-MM-DD_실험명/
 
 ## Update Notes
 
-실험, 분석, 버그픽스, 아이디어 등 유의미한 작업 시 반드시 `update_notes/` 아래에 `.md` 파일로 기록한다.
+실험, 분석, 버그픽스, 아이디어 등 유의미한 작업 시 반드시 `skill_graph/` 아래에 `.md` 파일로 기록한다.
 
 ```
-update_notes/
+skill_graph/
 ├── experiments/              # 실험 기록 (6단계)
 │   ├── _TEMPLATE.md
 │   └── YYYY-MM-DD_실험명/
@@ -232,9 +232,9 @@ update_notes/
 
 ## Deliverable Rules (납품물 관리)
 
-- 모든 납품물 관련 의사결정/변경사항은 `update_notes/deliverables/`에 기록
-- 납품 보고서 작성 시 `update_notes/experiments/`의 결과를 참조·인용
-- 기업 미팅 후 `update_notes/meetings/`에 회의록 작성 (액션아이템 포함)
+- 모든 납품물 관련 의사결정/변경사항은 `skill_graph/deliverables/`에 기록
+- 납품 보고서 작성 시 `skill_graph/experiments/`의 결과를 참조·인용
+- 기업 미팅 후 `skill_graph/meetings/`에 회의록 작성 (액션아이템 포함)
 - **모델 납품 시 체크리스트**: 추론 코드, 가중치 파일, 환경 설정, 입출력 스펙 문서
 
 ---

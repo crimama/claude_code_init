@@ -14,18 +14,18 @@ allowed-tools:
 최근 회의록:
 
 ```
-!find update_notes/meetings -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort -r | head -5!
+!find skill_graph/meetings -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort -r | head -5!
 ```
 
 ## 동작
 
 ### 인자 없음 또는 `list` → 회의록 목록
-- `update_notes/meetings/` 내 회의록 목록 출력
+- `skill_graph/meetings/` 내 회의록 목록 출력
 - 미완료 Action Items가 있는 회의록 하이라이트
 
 ### `<meeting-title>` → 회의록 생성
-1. `update_notes/meetings/_TEMPLATE.md` 기반으로 새 회의록 생성:
-   - 경로: `update_notes/meetings/YYYY-MM-DD_<meeting-title>.md`
+1. `skill_graph/meetings/_TEMPLATE.md` 기반으로 새 회의록 생성:
+   - 경로: `skill_graph/meetings/YYYY-MM-DD_<meeting-title>.md`
    - 날짜 자동 치환
 2. 사용자에게 다음 정보 요청:
    - 참석자
@@ -41,4 +41,4 @@ allowed-tools:
 - 회의록은 **결정 사항**과 **Action Items** 중심으로 간결하게
 - Action Items에는 반드시 담당자와 기한 지정
 - 이전 회의의 미완료 Action Items가 있으면 상단에 리마인드
-- 납품물 관련 결정은 `update_notes/deliverables/` 해당 노트에도 반영
+- 납품물 관련 결정은 `skill_graph/deliverables/` 해당 노트에도 반영

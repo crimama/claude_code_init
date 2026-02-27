@@ -16,7 +16,7 @@ allowed-tools:
 기존 버그픽스 노트:
 
 ```
-!find update_notes/bugfix -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/bugfix -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
@@ -27,8 +27,8 @@ allowed-tools:
    - 직접 로그, 에러, 실패 테스트를 분석
    - 근본 원인 식별 → 수정 → 검증
    - "손을 잡아달라" 하지 말 것
-3. `update_notes/bugfix/_TEMPLATE.md` 기반으로 노트 생성:
-   - 경로: `update_notes/bugfix/YYYY-MM-DD_<bug-description>.md`
+3. `skill_graph/bugfix/_TEMPLATE.md` 기반으로 노트 생성:
+   - 경로: `skill_graph/bugfix/YYYY-MM-DD_<bug-description>.md`
    - 증상, 원인, 해결, 변경 파일 섹션 채우기
 4. **검증 단계** 실행:
    - `npm test` (테스트 존재 시)

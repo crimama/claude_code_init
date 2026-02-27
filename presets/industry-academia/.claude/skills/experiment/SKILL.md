@@ -16,24 +16,24 @@ allowed-tools:
 이전 실험 목록:
 
 ```
-!find update_notes/experiments -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/experiments -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 관련 납품물:
 
 ```
-!find update_notes/deliverables -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/deliverables -name '*.md' ! -name '_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
 
 1. `$ARGUMENTS`에서 `<experiment-name>` 파싱
    - 인자 없으면 → 기존 실험 목록 + 납품물 연결 상태 출력
-2. `update_notes/experiments/_TEMPLATE.md` 기반으로 실험 노트 생성:
-   - 경로: `update_notes/experiments/YYYY-MM-DD_<experiment-name>.md`
+2. `skill_graph/experiments/_TEMPLATE.md` 기반으로 실험 노트 생성:
+   - 경로: `skill_graph/experiments/YYYY-MM-DD_<experiment-name>.md`
    - 실험 ID 자동 생성: `exp_YYYYMMDD_<짧은코드>`
 3. **마일스톤/납품물 연결**:
-   - `update_notes/deliverables/` 내 현재 활성 납품물 확인
+   - `skill_graph/deliverables/` 내 현재 활성 납품물 확인
    - 해당 실험이 어떤 납품물에 기여하는지 연결 설정
    - 납품물의 `## 포함할 실험 결과` 섹션에 링크 추가
 4. **Phase 1 (1~3단계) 작성 가이드**:

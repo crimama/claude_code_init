@@ -20,12 +20,12 @@
 ## Baseline Results
 <!-- 기준 성능. 모든 실험의 비교 대상. -->
 - **Metric1**: X% | **Metric2**: Y%
-- Details: `update_notes/analysis/baseline/_lessons.md`
+- Details: `skill_graph/analysis/baseline/_lessons.md`
 
 ## Experiment Process
 <!-- 6단계 프로세스 요약 -->
 6단계: 문제분석 → 가설 → 실험설정 → 결과 → 분석 → 피드백
-- Template: `update_notes/experiments/_TEMPLATE.md`
+- Template: `skill_graph/experiments/_TEMPLATE.md`
 - 가설 검증 결과 → `analysis/{주제}/_lessons.md` 승격
 - `## 관련 노트`로 실험 간 연쇄 추적 (스킬 그래프)
 

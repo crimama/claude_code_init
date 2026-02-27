@@ -35,7 +35,7 @@ allowed-tools:
 
 ### `promote <topic>` → 검증된 교훈 승격
 1. `tasks/lessons.md`에서 해당 topic 관련 교훈 식별
-2. `update_notes/analysis/<topic>/_lessons.md` 파일 생성 또는 업데이트
+2. `skill_graph/analysis/<topic>/_lessons.md` 파일 생성 또는 업데이트
    - `_LESSONS_TEMPLATE.md` 참조
 3. 승격 완료 후 원본 교훈에 `(→ 승격됨)` 표시
 

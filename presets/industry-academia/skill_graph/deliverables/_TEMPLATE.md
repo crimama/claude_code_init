@@ -14,7 +14,7 @@
 | | | [ ] |
 
 ## 포함할 실험 결과
-<!-- update_notes/experiments/ 에서 어떤 결과를 인용/포함할지 -->
+<!-- skill_graph/experiments/ 에서 어떤 결과를 인용/포함할지 -->
 -
 
 ## 작성 계획

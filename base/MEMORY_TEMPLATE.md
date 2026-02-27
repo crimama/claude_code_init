@@ -27,7 +27,7 @@ MEMORY.md에서는 링크만 남기는 것을 권장합니다.
 
 ## Lessons Learned
 <!-- 검증된 패턴, 실수한 것, 주의할 점 -->
-<!-- 상세 내용은 update_notes/analysis/{topic}/_lessons.md 참조 -->
+<!-- 상세 내용은 skill_graph/analysis/{topic}/_lessons.md 참조 -->
 
 ## Current Status
 <!-- 현재 진행 상황. 마지막 세션에서 어디까지 했는지. -->

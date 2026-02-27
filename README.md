@@ -1,7 +1,7 @@
 # Claude Code Init
 
 Claude Code 프로젝트를 위한 초기 설정 템플릿.
-**CLAUDE.md** (프로젝트 지침) · **MEMORY.md** (영속적 메모리) · **tasks/** (세션 운영) · **update_notes/** (지식 그래프)를 한 번에 세팅합니다.
+**CLAUDE.md** (프로젝트 지침) · **MEMORY.md** (영속적 메모리) · **tasks/** (세션 운영) · **skill_graph/** (지식 그래프)를 한 번에 세팅합니다.
 
 ## Quick Start
 
@@ -19,8 +19,8 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 
 | Preset | 용도 | 특화 기능 | Slash Commands |
 |--------|------|----------|----------------|
-| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ | `/todo` `/lessons` `/update-note` `/link-notes` |
-| `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 update_notes, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` |
+| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ | `/todo` `/lessons` `/update-note` `/link-notes` |
+| `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 skill_graph, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` |
 | `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention | + `/experiment` `/analyze` |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
 
@@ -56,7 +56,7 @@ bash setup.sh industry-academia # 산학과제
 │  ─ git tracked · 세션 시작 시 반드시 먼저 확인               │
 │  ─ 갱신 주기: 매 작업                                       │
 ├─────────────────────────────────────────────────────────┤
-│  Layer 4: update_notes/  (지식 그래프)                     │
+│  Layer 4: skill_graph/  (지식 그래프)                     │
 │  ─ experiments/ · analysis/ · bugfix/ · ideas/            │
 │  ─ 노트 간 "## 관련 노트"로 DAG 형태 양방향 링크             │
 │  ─ tasks/lessons.md의 검증된 패턴이 승격되는 목적지          │
@@ -66,7 +66,7 @@ bash setup.sh industry-academia # 산학과제
 
 ### Layer별 역할 비교
 
-|  | CLAUDE.md | MEMORY.md | tasks/ | update_notes/ |
+|  | CLAUDE.md | MEMORY.md | tasks/ | skill_graph/ |
 |--|-----------|-----------|--------|---------------|
 | **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 상세 기록 |
 | **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 논문 아카이브 |
@@ -101,8 +101,8 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 |---------|------|
 | `/todo` | `tasks/todo.md` 조회, 계획 작성, 체크, 완료 관리 |
 | `/lessons` | `tasks/lessons.md` 조회, 교훈 추가, 검증된 패턴 승격 |
-| `/update-note` | `update_notes/` 템플릿 기반 새 노트 생성 (키워드 자동 연결 포함) |
-| `/link-notes` | 키워드 기반 update_notes/ 노트 자동 연결 |
+| `/update-note` | `skill_graph/` 템플릿 기반 새 노트 생성 (키워드 자동 연결 포함) |
+| `/link-notes` | 키워드 기반 skill_graph/ 노트 자동 연결 |
 
 ### Dev 전용
 
@@ -139,7 +139,7 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 tasks/lessons.md          ← 세션 교훈 (빠른 기록, 항상 열려있는 파일)
         │ 반복 검증 후
         ▼
-update_notes/analysis/{주제}/_lessons.md   ← 검증된 프로젝트 지식 자산
+skill_graph/analysis/{주제}/_lessons.md   ← 검증된 프로젝트 지식 자산
         │ 핵심만 요약
         ▼
 MEMORY.md (Lessons Learned 섹션)           ← 매 세션 자동 로드
@@ -161,7 +161,7 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 
 ## Keyword Linking (노트 자동 연결)
 
-`update_notes/`의 노트들은 `## 관련 노트` 섹션을 통해 DAG 형태로 연결됩니다.
+`skill_graph/`의 노트들은 `## 관련 노트` 섹션을 통해 DAG 형태로 연결됩니다.
 `/link-notes` 스킬과 `/update-note` 생성 시 자동 연결이 이를 지원합니다.
 
 ### 키워드 소스 (우선순위)
@@ -180,8 +180,8 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 ### 사용법
 
 ```bash
-/link-notes                    # update_notes/ 전체 스캔 및 연결
-/link-notes update_notes/...   # 특정 파일만 대상으로 연결
+/link-notes                    # skill_graph/ 전체 스캔 및 연결
+/link-notes skill_graph/...   # 특정 파일만 대상으로 연결
 /update-note features my-feat  # 노트 생성 시 자동으로 연결 시도
 ```
 
@@ -221,7 +221,7 @@ your-project/
 ├── tasks/
 │   ├── todo.md                   # 세션 계획·체크리스트·결과
 │   └── lessons.md                # 누적 교훈 (수정/지적 → 패턴 추출)
-└── update_notes/
+└── skill_graph/
     ├── experiments/
     │   └── _TEMPLATE.md          # 6단계 실험 보고서 템플릿
     ├── analysis/
@@ -240,7 +240,7 @@ your-project/
 │   ├── lock-file/SKILL.md        # /lock-file
 │   └── unlock-file/SKILL.md      # /unlock-file
 ├── .locks/                       # 멀티에이전트 파일 잠금 디렉토리
-└── update_notes/
+└── skill_graph/
     ├── features/                 # 신규 기능 구현 기록
     ├── bugfix/                   # 버그 수정 (원인 분석 포함)
     ├── refactor/                 # 리팩토링 (Before/After)
@@ -256,7 +256,7 @@ your-project/
 ├── .claude/skills/               # + 2 research skills
 │   ├── experiment/SKILL.md       # /experiment
 │   └── analyze/SKILL.md          # /analyze
-└── update_notes/
+└── skill_graph/
     └── experiments/_TEMPLATE.md  # 6단계 + config_diff + Score Convention
 ```
 
@@ -274,7 +274,7 @@ your-project/
 │       └── README.md  # 데이터 출처·사용 조건 기록
 ├── demo/              # 기업 발표·데모용
 ├── reports/           # 자동 생성 성능 리포트
-└── update_notes/
+└── skill_graph/
     ├── deliverables/  # 납품물 관련 기록
     └── meetings/      # 회의록
 ```

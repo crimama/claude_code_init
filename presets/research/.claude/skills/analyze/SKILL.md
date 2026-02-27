@@ -14,23 +14,23 @@ allowed-tools:
 기존 분석 노트:
 
 ```
-!find update_notes/analysis -name '*.md' ! -name '_LESSONS_TEMPLATE.md' 2>/dev/null | sort!
+!find skill_graph/analysis -name '*.md' ! -name '_LESSONS_TEMPLATE.md' 2>/dev/null | sort!
 ```
 
 ## 동작
 
 ### `<topic>` → 분석 노트 생성
 1. 해당 topic과 관련된 실험 노트 검색:
-   - `update_notes/experiments/` 내 관련 파일 식별
-2. `update_notes/analysis/<topic>/` 디렉토리 생성
+   - `skill_graph/experiments/` 내 관련 파일 식별
+2. `skill_graph/analysis/<topic>/` 디렉토리 생성
 3. 관련 실험들의 결과를 종합한 분석 노트 작성:
-   - 경로: `update_notes/analysis/<topic>/YYYY-MM-DD_<topic>.md`
+   - 경로: `skill_graph/analysis/<topic>/YYYY-MM-DD_<topic>.md`
    - 패턴, 트렌드, 공통 교훈 추출
 4. 관련 실험 노트의 `## 관련 노트` 섹션에 분석 노트 링크 추가
 
 ### `<topic> promote` → 교훈 승격
 1. `tasks/lessons.md`에서 해당 topic 관련 교훈 식별
-2. `update_notes/analysis/<topic>/_lessons.md` 생성 또는 업데이트:
+2. `skill_graph/analysis/<topic>/_lessons.md` 생성 또는 업데이트:
    - `_LESSONS_TEMPLATE.md` 형식 적용
    - 실험 출처, 검증 횟수, 적용 조건 명시
 3. 원본 `tasks/lessons.md`에 `(→ 승격됨: analysis/<topic>/_lessons.md)` 표시

@@ -45,11 +45,11 @@
 <!-- 기준 성능. 모든 실험의 비교 대상. -->
 - **[주요지표]**: X% | **[보조지표]**: Y%
 - Backbone: [모델명], Input: [해상도], 조건: [N-shot 등]
-- Details: `update_notes/analysis/baseline/_lessons.md`
+- Details: `skill_graph/analysis/baseline/_lessons.md`
 
 ## Experiment Process
 6단계: 문제분석 → 가설 → 실험설정 → 결과 → 분석 → 피드백
-- Template: `update_notes/experiments/_TEMPLATE.md`
+- Template: `skill_graph/experiments/_TEMPLATE.md`
 - 가설 검증 결과 → `analysis/{주제}/_lessons.md` 승격
 - `## 관련 노트`로 실험 간 연쇄 추적 (스킬 그래프)
 
@@ -80,7 +80,7 @@
 
 ## Literature Survey
 <!-- 핵심 관련 논문 -->
-- 저장: `update_notes/analysis/literature_survey/`
+- 저장: `skill_graph/analysis/literature_survey/`
 
 ## Lessons Learned
 <!-- 검증된 패턴. 상세는 analysis/{topic}/_lessons.md 참조 -->
