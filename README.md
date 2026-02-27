@@ -17,12 +17,12 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 
 ## Presets
 
-| Preset | 용도 | 특화 기능 |
-|--------|------|----------|
-| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ |
-| `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 update_notes, Memory Management |
-| `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention |
-| `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready |
+| Preset | 용도 | 특화 기능 | Slash Commands |
+|--------|------|----------|----------------|
+| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ | `/todo` `/lessons` `/update-note` |
+| `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 update_notes, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` |
+| `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention | + `/experiment` `/analyze` |
+| `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
 
 ```bash
 bash setup.sh base              # 범용
@@ -90,6 +90,45 @@ bash setup.sh industry-academia # 산학과제
 
 ---
 
+## Slash Commands (Skills)
+
+`setup.sh` 실행 시 `.claude/skills/` 에 자동 설치되는 워크플로우 커맨드입니다.
+Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
+
+### Common (모든 프리셋)
+
+| Command | 설명 |
+|---------|------|
+| `/todo` | `tasks/todo.md` 조회, 계획 작성, 체크, 완료 관리 |
+| `/lessons` | `tasks/lessons.md` 조회, 교훈 추가, 검증된 패턴 승격 |
+| `/update-note` | `update_notes/` 템플릿 기반 새 노트 생성 |
+
+### Dev 전용
+
+| Command | 설명 |
+|---------|------|
+| `/feature` | 기능 개발 워크플로우 (노트 생성 + todo 연동 + plan 규칙) |
+| `/bugfix` | 버그 수정 워크플로우 (근본 원인 분석 + 검증) |
+| `/lock-file` | `.locks/` 파일 잠금 생성 (멀티에이전트 충돌 방지) |
+| `/unlock-file` | `.locks/` 파일 잠금 해제 + 좀비 정리 |
+
+### Research 전용
+
+| Command | 설명 |
+|---------|------|
+| `/experiment` | 6단계 실험 프로세스 (가설 → 실행 → 교훈 승격) |
+| `/analyze` | 분석 노트 생성 + `_lessons.md` 승격 관리 |
+
+### Industry-Academia 전용
+
+| Command | 설명 |
+|---------|------|
+| `/experiment` | 6단계 실험 프로세스 (마일스톤/납품물 연결 포함) |
+| `/meeting` | 회의록 생성 (참석자, 안건, Action Items) |
+| `/deliverable` | 납품물 추적 (기한 경고 + 실험 결과 연결) |
+
+---
+
 ## 지식 승격 흐름 (Promotion Flow)
 
 ```
@@ -144,7 +183,11 @@ your-project/
 ├── CLAUDE.md                     # 프로젝트 지침 + 워크플로우 규칙
 ├── MEMORY_TEMPLATE.md            # MEMORY.md 참조용 사본
 ├── .claude/
-│   └── settings.local.json       # 프로젝트별 자동 허용 명령어
+│   ├── settings.local.json       # 프로젝트별 자동 허용 명령어
+│   └── skills/                   # Slash commands
+│       ├── update-note/SKILL.md  # /update-note
+│       ├── lessons/SKILL.md      # /lessons
+│       └── todo/SKILL.md         # /todo
 ├── tasks/
 │   ├── todo.md                   # 세션 계획·체크리스트·결과
 │   └── lessons.md                # 누적 교훈 (수정/지적 → 패턴 추출)
@@ -161,6 +204,11 @@ your-project/
 
 ```
 your-project/
+├── .claude/skills/               # + 4 dev skills
+│   ├── feature/SKILL.md          # /feature
+│   ├── bugfix/SKILL.md           # /bugfix
+│   ├── lock-file/SKILL.md        # /lock-file
+│   └── unlock-file/SKILL.md      # /unlock-file
 ├── .locks/                       # 멀티에이전트 파일 잠금 디렉토리
 └── update_notes/
     ├── features/                 # 신규 기능 구현 기록
@@ -174,13 +222,22 @@ your-project/
 ### Research (추가)
 
 ```
-update_notes/experiments/_TEMPLATE.md  # 6단계 + config_diff + Score Convention
+your-project/
+├── .claude/skills/               # + 2 research skills
+│   ├── experiment/SKILL.md       # /experiment
+│   └── analyze/SKILL.md          # /analyze
+└── update_notes/
+    └── experiments/_TEMPLATE.md  # 6단계 + config_diff + Score Convention
 ```
 
 ### Industry-Academia (추가)
 
 ```
 your-project/
+├── .claude/skills/               # + 3 industry-academia skills
+│   ├── experiment/SKILL.md       # /experiment (마일스톤 연결)
+│   ├── meeting/SKILL.md          # /meeting
+│   └── deliverable/SKILL.md      # /deliverable
 ├── data/
 │   ├── public/        # 공개 데이터셋
 │   └── proprietary/   # 기업 제공 데이터 (git 미추적, .gitignore 처리)
@@ -188,8 +245,8 @@ your-project/
 ├── demo/              # 기업 발표·데모용
 ├── reports/           # 자동 생성 성능 리포트
 └── update_notes/
-    ├── deliverables/  # 📦 납품물 관련 기록
-    └── meetings/      # 📋 회의록
+    ├── deliverables/  # 납품물 관련 기록
+    └── meetings/      # 회의록
 ```
 
 ---
@@ -200,7 +257,8 @@ your-project/
 2. **`MEMORY.md` 편집** — `~/.claude/projects/{path}/memory/MEMORY.md` 초기 내용 작성
 3. **`tasks/lessons.md`** — 세션 시작마다 먼저 확인
 4. **Claude Code 시작** — 해당 디렉토리에서 `claude` 실행
-5. **(선택) `settings.local.json` 편집** — 자주 쓰는 bash 명령 자동 허용 추가
+5. **Slash commands 사용** — `/todo`, `/lessons`, `/update-note` 등 설치된 커맨드 활용
+6. **(선택) `settings.local.json` 편집** — 자주 쓰는 bash 명령 자동 허용 추가
 
 ## MEMORY.md 경로
 

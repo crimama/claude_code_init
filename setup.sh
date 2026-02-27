@@ -64,7 +64,7 @@ mkdir -p "$TARGET"
 
 # ─── Copy base files ───────────────────────────────────────
 
-echo -e "${GREEN}[1/5]${NC} Copying base structure..."
+echo -e "${GREEN}[1/6]${NC} Copying base structure..."
 
 # CLAUDE.md — use preset version if exists, otherwise base
 if [ -f "$SOURCE_DIR/presets/$PRESET/CLAUDE.md" ]; then
@@ -103,7 +103,7 @@ fi
 
 # ─── MEMORY.md setup ──────────────────────────────────────
 
-echo -e "${GREEN}[2/5]${NC} Preparing MEMORY.md template..."
+echo -e "${GREEN}[2/6]${NC} Preparing MEMORY.md template..."
 
 # Determine project memory path
 TARGET_ABS=$(realpath "$TARGET")
@@ -131,7 +131,7 @@ fi
 
 # ─── Preset-specific extras ────────────────────────────────
 
-echo -e "${GREEN}[3/5]${NC} Setting up tasks/ directory..."
+echo -e "${GREEN}[3/6]${NC} Setting up tasks/ directory..."
 
 # ─── tasks/ setup ─────────────────────────────────────────
 
@@ -189,7 +189,7 @@ EOF
     echo -e "  ${GREEN}Created:${NC} tasks/lessons.md"
 fi
 
-echo -e "${GREEN}[4/5]${NC} Applying preset-specific settings..."
+echo -e "${GREEN}[4/6]${NC} Applying preset-specific settings..."
 
 case "$PRESET" in
     dev)
@@ -218,9 +218,24 @@ case "$PRESET" in
         ;;
 esac
 
+# ─── Skills ───────────────────────────────────────────────
+
+echo -e "${GREEN}[5/6]${NC} Installing Claude Code skills..."
+
+if [ -d "$TARGET/.claude/skills" ]; then
+    SKILL_COUNT=$(find "$TARGET/.claude/skills" -name 'SKILL.md' | wc -l)
+    echo -e "  ${GREEN}Installed ${SKILL_COUNT} slash commands:${NC}"
+    for skill_dir in "$TARGET/.claude/skills"/*/; do
+        skill_name=$(basename "$skill_dir")
+        echo -e "    ${YELLOW}/${skill_name}${NC}"
+    done
+else
+    echo -e "  ${YELLOW}No skills found for this preset${NC}"
+fi
+
 # ─── Summary ──────────────────────────────────────────────
 
-echo -e "${GREEN}[5/5]${NC} Done!"
+echo -e "${GREEN}[6/6]${NC} Done!"
 echo ""
 echo -e "${BLUE}Created structure:${NC}"
 echo ""
@@ -242,6 +257,7 @@ echo -e "Next steps:"
 echo -e "  1. ${YELLOW}Edit CLAUDE.md${NC} — Fill in project-specific sections"
 echo -e "  2. ${YELLOW}Edit MEMORY.md${NC} — at $MEMORY_DIR/MEMORY.md"
 echo -e "  3. ${YELLOW}Start Claude Code${NC} in this directory"
+echo -e "  4. ${YELLOW}Try slash commands${NC} — /todo, /lessons, /update-note"
 echo ""
 echo -e "  MEMORY_TEMPLATE.md is included in the project for reference."
 echo -e "  The actual persistent memory is at:"
