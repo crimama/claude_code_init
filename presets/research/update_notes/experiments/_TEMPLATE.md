@@ -3,6 +3,7 @@
 > **상태**: 🔴 계획 / 🟡 진행중 / 🟢 완료
 > **실험 ID**: `exp_YYYYMMDD_짧은코드`
 > **config**: [`config_diff.yaml`](./config_diff.yaml)
+> **keywords**:
 
 ---
 

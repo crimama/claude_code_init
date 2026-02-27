@@ -19,7 +19,7 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 
 | Preset | 용도 | 특화 기능 | Slash Commands |
 |--------|------|----------|----------------|
-| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ | `/todo` `/lessons` `/update-note` |
+| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ | `/todo` `/lessons` `/update-note` `/link-notes` |
 | `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 update_notes, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` |
 | `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention | + `/experiment` `/analyze` |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
@@ -101,7 +101,8 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 |---------|------|
 | `/todo` | `tasks/todo.md` 조회, 계획 작성, 체크, 완료 관리 |
 | `/lessons` | `tasks/lessons.md` 조회, 교훈 추가, 검증된 패턴 승격 |
-| `/update-note` | `update_notes/` 템플릿 기반 새 노트 생성 |
+| `/update-note` | `update_notes/` 템플릿 기반 새 노트 생성 (키워드 자동 연결 포함) |
+| `/link-notes` | 키워드 기반 update_notes/ 노트 자동 연결 |
 
 ### Dev 전용
 
@@ -158,6 +159,34 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 
 ---
 
+## Keyword Linking (노트 자동 연결)
+
+`update_notes/`의 노트들은 `## 관련 노트` 섹션을 통해 DAG 형태로 연결됩니다.
+`/link-notes` 스킬과 `/update-note` 생성 시 자동 연결이 이를 지원합니다.
+
+### 키워드 소스 (우선순위)
+
+1. **명시적 키워드** — 노트 상단 `> **keywords**: PTY, session, resume` (쉼표 구분)
+2. **헤딩 추출** — H1, H2 텍스트에서 stopword 제외 후 추출
+3. **경로 토큰** — 카테고리명 + 파일명 하이픈 분리
+
+### 매칭 규칙
+
+- 두 노트의 키워드 교집합이 **2개 이상**이면 관련 노트로 판정
+- 양방향 링크 필수 (A→B 추가 시 B→A도 추가)
+- 기존 수동 링크(`선행:`, `후속:` 등)는 절대 삭제하지 않음
+- `_TEMPLATE.md`는 스캔 대상에서 제외
+
+### 사용법
+
+```bash
+/link-notes                    # update_notes/ 전체 스캔 및 연결
+/link-notes update_notes/...   # 특정 파일만 대상으로 연결
+/update-note features my-feat  # 노트 생성 시 자동으로 연결 시도
+```
+
+---
+
 ## 6단계 실험 프로세스 (Research / Industry-Academia)
 
 ```
@@ -186,6 +215,7 @@ your-project/
 │   ├── settings.local.json       # 프로젝트별 자동 허용 명령어
 │   └── skills/                   # Slash commands
 │       ├── update-note/SKILL.md  # /update-note
+│       ├── link-notes/SKILL.md   # /link-notes
 │       ├── lessons/SKILL.md      # /lessons
 │       └── todo/SKILL.md         # /todo
 ├── tasks/

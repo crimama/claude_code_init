@@ -4,6 +4,7 @@
 > **실험 ID**: `exp_YYYYMMDD_짧은코드`
 > **관련 마일스톤**: [해당 납품 마일스톤]
 > **config**: [`config_diff.yaml`](./config_diff.yaml)
+> **keywords**:
 
 ---
 
