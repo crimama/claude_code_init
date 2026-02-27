@@ -10,6 +10,7 @@
 #
 # preset:
 #   base              — 최소 범용 구조 (기본값)
+#   dev               — 소프트웨어 개발 특화 (멀티에이전트 협업, 개발 중심 update_notes)
 #   research          — ML/DL 연구 프로젝트 특화
 #   industry-academia — 산학과제 특화 (납품물/회의록 관리 포함)
 #
@@ -37,9 +38,9 @@ echo -e "${BLUE}╚════════════════════�
 echo ""
 
 # Validate preset
-if [[ ! "$PRESET" =~ ^(base|research|industry-academia)$ ]]; then
+if [[ ! "$PRESET" =~ ^(base|dev|research|industry-academia)$ ]]; then
     echo -e "${RED}Error: Unknown preset '$PRESET'${NC}"
-    echo "Available presets: base, research, industry-academia"
+    echo "Available presets: base, dev, research, industry-academia"
     exit 1
 fi
 
@@ -191,6 +192,15 @@ fi
 echo -e "${GREEN}[4/5]${NC} Applying preset-specific settings..."
 
 case "$PRESET" in
+    dev)
+        echo -e "  ${GREEN}+${NC} Agent Coordination Protocol (multi-agent file locks)"
+        echo -e "  ${GREEN}+${NC} Dev-oriented update_notes (features/bugfix/refactor/devops/decisions)"
+        echo -e "  ${GREEN}+${NC} Memory Management with topic files"
+        echo -e "  ${GREEN}+${NC} .gitignore for .env, Prisma DB, .locks/"
+        # Create .locks directory
+        mkdir -p "$TARGET/.locks"
+        touch "$TARGET/.locks/.gitkeep"
+        ;;
     research)
         echo -e "  ${GREEN}+${NC} 6-stage experiment process template"
         echo -e "  ${GREEN}+${NC} _lessons.md knowledge graph structure"

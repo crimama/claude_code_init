@@ -20,11 +20,13 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 | Preset | 용도 | 특화 기능 |
 |--------|------|----------|
 | `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + update_notes/ |
+| `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 update_notes, Memory Management |
 | `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready |
 
 ```bash
 bash setup.sh base              # 범용
+bash setup.sh dev               # 소프트웨어 개발
 bash setup.sh research          # ML/DL 연구
 bash setup.sh industry-academia # 산학과제
 ```
@@ -153,6 +155,20 @@ your-project/
     │   └── _LESSONS_TEMPLATE.md  # lessons.md 승격 목적지 템플릿
     ├── bugfix/
     └── ideas/
+```
+
+### Dev (추가)
+
+```
+your-project/
+├── .locks/                       # 멀티에이전트 파일 잠금 디렉토리
+└── update_notes/
+    ├── features/                 # 신규 기능 구현 기록
+    ├── bugfix/                   # 버그 수정 (원인 분석 포함)
+    ├── refactor/                 # 리팩토링 (Before/After)
+    ├── devops/                   # 빌드/배포/인프라 변경
+    ├── decisions/                # 아키텍처/기술 결정 (ADR)
+    └── analysis/                 # 교훈 승격 목적지
 ```
 
 ### Research (추가)
