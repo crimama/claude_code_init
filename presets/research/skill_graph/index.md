@@ -1,6 +1,6 @@
 # Skill Graph Index
 
-> 프로젝트 변경 기록의 키워드 기반 인덱스.
+> 프로젝트 연구 기록의 키워드 기반 인덱스.
 > 키워드 → 문서 링크로 그래프 탐색 가능.
 > 새 문서 추가 시 이 파일도 함께 갱신할 것.
 
@@ -39,6 +39,16 @@
 |------|------|--------|
 <!-- | [제목](experiments/YYYY-MM-DD_name.md) | 🟢 | `kw1` `kw2` | -->
 
+### papers/
+| 문서 | 구분 | 키워드 |
+|------|------|--------|
+<!-- | [논문명](papers/YYYY-MM-DD_name.md) | competitor | `kw1` `kw2` | -->
+
+### ideas/
+| 문서 | 상태 | 키워드 |
+|------|------|--------|
+<!-- | [아이디어명](ideas/YYYY-MM-DD_name.md) | screened | `kw1` `kw2` | -->
+
 ### bugfix/
 _(아직 없음)_
 
@@ -53,6 +63,14 @@ experiments/YYYY-MM-DD_hypothesis.md
         │
         ▼ (결과)
 experiments/YYYY-MM-DD_result.md
+
+papers/YYYY-MM-DD_related_work.md
+        │
+        ▼ (inspires)
+ideas/YYYY-MM-DD_method.md
+        │
+        ▼ (tested by)
+experiments/YYYY-MM-DD_ablation/
 -->
 ```
 

@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **단순한 성능 향상이 목표가 아니다.** 연구로서 가치가 있으며 동시에 성능을 향상시킬 수 있는 **novelty 있는 방법론을 제안**하는 것이 최종 목표다. 모든 실험과 방법론 설계는 "왜 이 방법이 학술적으로 의미가 있는가?"를 먼저 답할 수 있어야 한다. Trick 나열이 아닌, 명확한 insight와 원리에 기반한 방법론을 추구한다.
 
+추가로 모든 연구 작업은 아래 4가지를 동시에 만족하도록 설계한다.
+- **Claim**: 무엇을 주장하는가
+- **Evidence**: 그 주장을 어떤 실험/분석으로 지지하는가
+- **Boundary**: 어디까지 성립하고 어디서 깨지는가
+- **Positioning**: 기존 방법 대비 어떤 차별성이 있는가
+
 ## Project Summary
 
 <!-- 연구 프로젝트 한 문단 요약 -->
@@ -73,6 +79,8 @@ Testing:  Data → Features → [Core Method] → Scoring → Metrics
 `[TUNE]` = 자주 튜닝하는 하이퍼파라미터
 `[ARCH]` = 아키텍처 선택 (덜 변경)
 `[DEPRECATED]` = 호환성 유지용 (미사용)
+`[ABLATION]` = 논문 ablation에서 독립 변수로 다룰 항목
+`[REPRO]` = 재현성에 직접 영향 주는 항목 (seed, split, eval protocol 등)
 
 ---
 
@@ -136,6 +144,7 @@ Testing:  Data → Features → [Core Method] → Scoring → Metrics
 - 변경 사항이 있을 때: main 동작과 diff하여 확인
 - "시니어 엔지니어가 이 코드를 승인할 것인가?" 자문
 - 테스트 실행, 로그 확인, 정확성 시연 후 완료
+- 연구 작업은 추가로 "이 결과가 논문 figure/table/claim에 들어갈 수 있는가?"까지 확인
 
 ### 5. Demand Elegance (Balanced)
 - 비자명한 변경에는 "더 우아한 방법이 있지 않은가?" 자문
@@ -146,6 +155,44 @@ Testing:  Data → Features → [Core Method] → Scoring → Metrics
 - 버그 리포트가 주어지면: **그냥 고친다**. 손을 잡아달라고 하지 말 것
 - 로그, 에러, 실패 테스트를 직접 분석하여 해결
 - 사용자의 컨텍스트 전환 없이 처리
+
+---
+
+## Research Decision Rules
+
+### 1. Novelty Gate
+- 새 아이디어 제안 전 반드시 아래를 한 줄씩 답한다.
+  - 기존 방법의 핵심 한계는 무엇인가?
+  - 제안 방법이 건드리는 메커니즘은 무엇인가?
+  - 이 차이가 논문 contribution 한 줄로 요약 가능한가?
+- 위 질문에 답하지 못하면 구현보다 **문제 재정의 또는 related work 조사**를 우선한다
+
+### 2. Claim-Evidence Discipline
+- claim 하나당 최소 하나의 직접 증거를 연결한다
+- 성능 주장은 평균 성능만이 아니라 **분산, seed 민감도, category별 편차**를 함께 본다
+- "개선됨"이라는 표현은 baseline, 비교군, metric, split이 명시될 때만 사용
+- 증거 없는 직관 서술은 `가설`, 검증 완료된 서술은 `결론`으로 명확히 구분한다
+
+### 3. Baseline and Ablation First
+- 새 방법은 반드시 **강한 baseline**과 비교한다. 약한 baseline을 이긴 것만으로 기여를 주장하지 않는다
+- 성능이 좋아도 ablation 없이 핵심 모듈 기여를 주장하지 않는다
+- ablation은 가능한 한 one-factor change로 설계한다
+- 부가 모듈이 많아질수록 "없어도 되는 것"을 제거하는 ablation을 우선한다
+
+### 4. Reproducibility Minimum Bar
+- 최소 기록 항목: commit hash, config diff, seed, 데이터 split, 체크포인트/로그 경로
+- 재현 불가능한 결과는 좋은 결과가 아니라 **미완료 결과**로 취급한다
+- 평가 스크립트와 학습 스크립트의 metric 정의가 다를 가능성을 항상 점검한다
+
+### 5. Negative Results Are Assets
+- 실패 실험도 버리지 않는다. 왜 실패했는지까지 기록해야 탐색 공간이 줄어든다
+- "안 됨"이 아니라 "어떤 조건에서 왜 안 됨"으로 정리한다
+- 반복 실패 패턴은 `_lessons.md`로 승격해 이후 탐색 비용을 줄인다
+
+### 6. Paper-Oriented Prioritization
+- 구현 난이도보다 **논문 메시지 밀도**가 높은 실험을 우선한다
+- 결과가 좋아도 설명이 약하면 후순위, 결과가 약간 부족해도 설명력이 강하면 보존한다
+- 최종적으로는 contribution, figure, table, related work 문단으로 재사용 가능한 형태를 선호한다
 
 ---
 
@@ -184,6 +231,9 @@ tasks/
 - 실험 완료 후 4~6단계 기록
 - 가설 검증 결과가 반복 활용 가능하면 `analysis/{주제}/_lessons.md`로 승격
 - `## 관련 노트`로 실험 간 연쇄 추적
+- 모든 실험은 가능한 경우 baseline 대비 **단일 주장 검증(single claim test)** 형태로 쪼갠다
+- 메인 결과 표에 들어갈 후보 실험은 seed, confidence interval 또는 반복 측정 여부를 표시한다
+- 성능 향상 실험과 별도로 실패 사례, category 편차, calibration/robustness를 보는 분석 실험을 분리한다
 
 **실험 디렉토리 구조:**
 ```
@@ -200,6 +250,9 @@ skill_graph/
 ├── experiments/
 │   ├── _TEMPLATE.md              # 실험 보고서 템플릿 (6단계 프로세스)
 │   └── YYYY-MM-DD_실험명/
+├── papers/
+│   ├── _TEMPLATE.md              # 관련 논문/선행연구 요약
+│   └── YYYY-MM-DD_논문명.md
 ├── analysis/
 │   └── 주제명/
 │       ├── YYYY-MM-DD_설명.md
@@ -212,12 +265,18 @@ skill_graph/
 
 **스킬 그래프:**
 - 노트 간 `## 관련 노트`로 상대 경로 링크
-- 실험 → 분석 → 아이디어 → 후속 실험 흐름 추적
+- 실험 → 분석 → 아이디어 → 논문 포지셔닝 → 후속 실험 흐름 추적
 - 반복되는 패턴이나 검증된 기법은 `analysis/{주제}/_lessons.md`로 승격
 
 ---
 
 ## Core Principles
+
+- **Research Over Tricks**: 성능 숫자보다 연구 메시지와 메커니즘 설명을 우선한다
+- **Strong Baselines Only**: 약한 비교군 위의 승리는 기여가 아니다
+- **One Claim, One Test**: 한 실험이 여러 주장을 동시에 떠안지 않게 설계한다
+- **Evidence Before Narrative**: 서사는 결과 뒤에 온다. 먼저 증거를 만든다
+- **Reproducibility Is Part of Quality**: 재현성 없는 결과는 미완성으로 본다
 
 - **Simplicity First**: 모든 변경은 가능한 한 단순하게. 최소한의 코드에만 영향을 줄 것
 - **No Laziness**: 근본 원인을 찾아라. 임시방편 금지. 시니어 개발자 기준을 적용

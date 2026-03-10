@@ -22,6 +22,22 @@
 - **Metric1**: X% | **Metric2**: Y%
 - Details: `skill_graph/analysis/baseline/_lessons.md`
 
+## Research Claims
+<!-- 현재 프로젝트가 지키고 싶은 핵심 주장 후보. -->
+- Claim 1:
+  - Evidence:
+  - Boundary:
+  - Status: hypothesis / partial / verified
+
+## Evaluation Protocol
+<!-- 결과 비교 시 고정해야 하는 평가 규칙 -->
+- Primary metric:
+- Secondary metrics:
+- Dataset split:
+- Seeds:
+- Checkpoint selection rule:
+- Statistical reporting:
+
 ## Experiment Process
 <!-- 6단계 프로세스 요약 -->
 6단계: 문제분석 → 가설 → 실험설정 → 결과 → 분석 → 피드백
@@ -36,5 +52,16 @@
 ## Paper Direction
 <!-- 현재 논문 방향, contribution 목록 -->
 
+## Ablation Map
+<!-- 논문에 반드시 필요한 ablation 축 -->
+- Module contribution:
+- Loss/objective contribution:
+- Data/augmentation contribution:
+- Robustness/generalization:
+
 ## Literature Survey
 <!-- 핵심 관련 논문, SOTA 성능 비교 -->
+
+## Open Research Questions
+<!-- 아직 닫히지 않은 핵심 질문 -->
+- 

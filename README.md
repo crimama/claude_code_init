@@ -21,7 +21,7 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 |--------|------|----------|----------------|
 | `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ | `/todo` `/lessons` `/update-note` `/link-notes` `/verify` `/checkpoint` `/compact` `/learn` |
 | `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 skill_graph, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` `/quality-gate` |
-| `research` | ML/DL 연구 | 6단계 실험 프로세스, Config 태그 ([TUNE]/[ARCH]), Score Convention | + `/experiment` `/analyze` |
+| `research` | ML/DL 연구 | 6단계 실험 프로세스, Claim-Evidence 규율, 강한 baseline/ablation, 재현성 추적, literature/idea 템플릿 | + `/experiment` `/analyze` |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
 
 ```bash
@@ -57,9 +57,9 @@ bash setup.sh industry-academia # 산학과제
 │  ─ 갱신 주기: 매 작업                                       │
 ├─────────────────────────────────────────────────────────┤
 │  Layer 4: skill_graph/  (지식 그래프)                     │
-│  ─ experiments/ · analysis/ · bugfix/ · ideas/            │
+│  ─ experiments/ · analysis/ · bugfix/ · ideas/ · papers/  │
 │  ─ 노트 간 "## 관련 노트"로 DAG 형태 양방향 링크             │
-│  ─ tasks/lessons.md의 검증된 패턴이 승격되는 목적지          │
+│  ─ tasks/lessons.md의 검증된 패턴과 연구 노트가 승격·축적되는 목적지 │
 │  ─ git tracked · 갱신 주기: 작업마다 (상세 기록 축적)        │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -69,7 +69,7 @@ bash setup.sh industry-academia # 산학과제
 |  | CLAUDE.md | MEMORY.md | tasks/ | skill_graph/ |
 |--|-----------|-----------|--------|---------------|
 | **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 상세 기록 |
-| **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 논문 아카이브 |
+| **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 연구 아카이브 |
 | **갱신** | 드물게 | 매 세션 | 매 작업 | 매 작업 |
 | **로드** | 전체 자동 | 200줄 자동 | 수동 참조 | 수동 참조 |
 
@@ -172,8 +172,8 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 
 | Command | 설명 |
 |---------|------|
-| `/experiment` | 6단계 실험 프로세스 (가설 → 실행 → 교훈 승격) |
-| `/analyze` | 분석 노트 생성 + `_lessons.md` 승격 관리 |
+| `/experiment` | 6단계 실험 프로세스 (가설 → 실행 → 교훈 승격, single-claim test 지향) |
+| `/analyze` | 분석 노트 생성 + `_lessons.md` 승격 관리 + 실패 패턴 축적 |
 
 ### Industry-Academia 전용
 
@@ -255,6 +255,9 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 ```
 
 **규칙**: 실험 시작 전 1~3단계를 **반드시 먼저 작성**한 후 실행. 완료 후 4~6단계 기록.
+- claim 하나당 직접 증거를 연결하고, 가능한 한 baseline 대비 단일 주장 검증(single-claim test)으로 쪼갭니다.
+- 메인 결과 후보는 seed/반복 측정 여부를 명시하고, 재현성 항목(commit hash, config diff, split, log path)을 남깁니다.
+- 실패 실험도 버리지 않고 `_lessons.md` 승격 후보로 관리합니다.
 
 ---
 
@@ -297,7 +300,8 @@ your-project/
     ├── analysis/
     │   └── _LESSONS_TEMPLATE.md  # lessons.md 승격 목적지 템플릿
     ├── bugfix/
-    └── ideas/
+    ├── ideas/
+    └── papers/
 ```
 
 ### Dev (추가)
@@ -331,7 +335,9 @@ your-project/
 │   ├── experiment/SKILL.md       # /experiment
 │   └── analyze/SKILL.md          # /analyze
 └── skill_graph/
-    └── experiments/_TEMPLATE.md  # 6단계 + config_diff + Score Convention
+    ├── experiments/_TEMPLATE.md  # 6단계 + config_diff + single-claim test
+    ├── ideas/_TEMPLATE.md        # novelty screen + risk screen
+    └── papers/_TEMPLATE.md       # related work / competitor / baseline 정리
 ```
 
 ### Industry-Academia (추가)
