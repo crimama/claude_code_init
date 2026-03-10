@@ -80,13 +80,26 @@ else
     cp -r "$SOURCE_DIR/base/skill_graph" "$TARGET/skill_graph"
 fi
 
-# .claude/ directory
-if [ -d "$SOURCE_DIR/presets/$PRESET/.claude" ]; then
-    mkdir -p "$TARGET/.claude"
-    cp -r "$SOURCE_DIR/presets/$PRESET/.claude/"* "$TARGET/.claude/" 2>/dev/null || true
-elif [ -d "$SOURCE_DIR/base/.claude" ]; then
-    mkdir -p "$TARGET/.claude"
+# .claude/ directory (base first, then preset overlay)
+mkdir -p "$TARGET/.claude"
+if [ -d "$SOURCE_DIR/base/.claude" ]; then
     cp -r "$SOURCE_DIR/base/.claude/"* "$TARGET/.claude/" 2>/dev/null || true
+fi
+if [ -d "$SOURCE_DIR/presets/$PRESET/.claude" ]; then
+    cp -r "$SOURCE_DIR/presets/$PRESET/.claude/"* "$TARGET/.claude/" 2>/dev/null || true
+fi
+
+# hooks/ directory
+cp -r "$SOURCE_DIR/base/hooks" "$TARGET/hooks"
+chmod +x "$TARGET/hooks/"*.sh 2>/dev/null || true
+
+# contexts/ directory (session mode files)
+cp -r "$SOURCE_DIR/base/contexts" "$TARGET/contexts"
+
+# agents/ directory (base first, then preset overlay)
+cp -r "$SOURCE_DIR/base/agents" "$TARGET/agents"
+if [ -d "$SOURCE_DIR/presets/$PRESET/agents" ]; then
+    cp -r "$SOURCE_DIR/presets/$PRESET/agents/"* "$TARGET/agents/" 2>/dev/null || true
 fi
 
 # .gitignore (if template exists)
@@ -220,7 +233,7 @@ esac
 
 # ─── Skills ───────────────────────────────────────────────
 
-echo -e "${GREEN}[5/6]${NC} Installing Claude Code skills..."
+echo -e "${GREEN}[5/6]${NC} Installing Claude Code skills & agents..."
 
 if [ -d "$TARGET/.claude/skills" ]; then
     SKILL_COUNT=$(find "$TARGET/.claude/skills" -name 'SKILL.md' | wc -l)
@@ -232,6 +245,25 @@ if [ -d "$TARGET/.claude/skills" ]; then
 else
     echo -e "  ${YELLOW}No skills found for this preset${NC}"
 fi
+
+if [ -d "$TARGET/agents" ]; then
+    AGENT_COUNT=$(find "$TARGET/agents" -name '*.md' | wc -l)
+    echo -e "  ${GREEN}Installed ${AGENT_COUNT} agent definitions:${NC}"
+    for agent_file in "$TARGET/agents"/*.md; do
+        agent_name=$(basename "$agent_file" .md)
+        echo -e "    ${YELLOW}@${agent_name}${NC}"
+    done
+fi
+
+echo -e "  ${GREEN}Installed 3 context modes:${NC}"
+echo -e "    ${YELLOW}dev${NC}, ${YELLOW}research${NC}, ${YELLOW}review${NC}"
+
+HOOK_COUNT=$(find "$TARGET/hooks" -name '*.sh' 2>/dev/null | wc -l)
+echo -e "  ${GREEN}Installed ${HOOK_COUNT} hooks:${NC}"
+for hook_file in "$TARGET/hooks"/*.sh; do
+    hook_name=$(basename "$hook_file" .sh)
+    echo -e "    ${YELLOW}${hook_name}${NC}"
+done
 
 # ─── Summary ──────────────────────────────────────────────
 
@@ -257,7 +289,9 @@ echo -e "Next steps:"
 echo -e "  1. ${YELLOW}Edit CLAUDE.md${NC} — Fill in project-specific sections"
 echo -e "  2. ${YELLOW}Edit MEMORY.md${NC} — at $MEMORY_DIR/MEMORY.md"
 echo -e "  3. ${YELLOW}Start Claude Code${NC} in this directory"
-echo -e "  4. ${YELLOW}Try slash commands${NC} — /todo, /lessons, /update-note"
+echo -e "  4. ${YELLOW}Try slash commands${NC} — /todo, /lessons, /verify, /learn"
+echo -e "  5. ${YELLOW}Context modes${NC} — 'research 모드로 진행' 또는 contexts/*.md 참조"
+echo -e "  6. ${YELLOW}Agent reference${NC} — agents/*.md 참조"
 echo ""
 echo -e "  MEMORY_TEMPLATE.md is included in the project for reference."
 echo -e "  The actual persistent memory is at:"

@@ -1,5 +1,42 @@
 {
   "permissions": {
     "allow": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash hooks/suggest-compact.sh"
+          }
+        ],
+        "description": "전략적 compact 제안 — 논리적 전환점에서 /compact 권유"
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash hooks/git-push-reminder.sh"
+          }
+        ],
+        "description": "git push 전 리뷰 리마인더"
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash hooks/lessons-reminder.sh",
+            "timeout": 5
+          }
+        ],
+        "description": "세션 중 교훈 기록 리마인더"
+      }
+    ]
   }
 }

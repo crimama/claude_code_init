@@ -46,6 +46,41 @@ Input → Processing → Output
 
 ---
 
+## Agents
+
+프로젝트에서 활용 가능한 전문 에이전트. `agents/` 디렉토리에 정의.
+
+| 에이전트 | 모델 | 용도 | 활성화 시점 |
+|---------|------|------|-----------|
+| planner | opus | 구현 계획 수립 | 3단계+ 작업, 아키텍처 결정 |
+| code-reviewer | sonnet | 코드 품질/보안 리뷰 | 코드 변경 후 |
+
+에이전트 호출: Subagent Strategy에 따라 서브에이전트로 실행하거나 참조 문서로 활용.
+
+## Context Modes
+
+세션 중 작업 모드 전환. `contexts/` 디렉토리의 모드 파일 참조.
+
+| 모드 | 파일 | 포커스 |
+|------|------|--------|
+| dev | `contexts/dev.md` | 구현 집중 — 코드 먼저, 설명 후 |
+| research | `contexts/research.md` | 탐색 집중 — 이해 먼저, 코드 후 |
+| review | `contexts/review.md` | 리뷰 집중 — 품질, 보안, 유지보수성 |
+
+활성화: "이 세션은 [모드] 모드로 진행합니다" 또는 해당 파일 참조 요청.
+
+## Hooks
+
+자동 실행되는 품질 관리 훅. `.claude/settings.local.json`에 설정.
+
+| 훅 | 이벤트 | 동작 |
+|----|--------|------|
+| suggest-compact | PreToolUse (Edit/Write) | 도구 호출 50회+ 시 전략적 /compact 제안 |
+| git-push-reminder | PreToolUse (Bash) | git push 전 리뷰 리마인더 |
+| lessons-reminder | Stop | 세션 중 교훈 기록 리마인더 |
+
+---
+
 ## Workflow Orchestration
 
 ### 1. Plan Node Default
