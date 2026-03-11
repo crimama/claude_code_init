@@ -1,6 +1,22 @@
 {
   "permissions": {
-    "allow": []
+    "allow": [
+      "Bash(python -m orchestrator init:*)",
+      "Bash(python -m orchestrator plan:*)",
+      "Bash(python -m orchestrator add-task:*)",
+      "Bash(python -m orchestrator dispatch:*)",
+      "Bash(python -m orchestrator status:*)",
+      "Bash(python -m orchestrator merge:*)",
+      "Bash(python -m orchestrator sessions:*)",
+      "Bash(python -m orchestrator clean:*)"
+    ]
+  },
+  "env": {
+    "ORCH_AGENT_CMD": "codex",
+    "ORCH_APPROVAL_MODE": "full-auto",
+    "ORCH_USE_WORKTREE": "true",
+    "ORCH_BASE_BRANCH": "main",
+    "ORCH_AGENT_TIMEOUT": "600"
   },
   "hooks": {
     "PreToolUse": [

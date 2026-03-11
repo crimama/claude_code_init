@@ -93,6 +93,12 @@ fi
 cp -r "$SOURCE_DIR/base/hooks" "$TARGET/hooks"
 chmod +x "$TARGET/hooks/"*.sh 2>/dev/null || true
 
+# orchestrator/ module (multi-agent coordination)
+cp -r "$SOURCE_DIR/base/orchestrator" "$TARGET/orchestrator"
+
+# AGENTS.md (Codex agent guidance)
+cp "$SOURCE_DIR/base/AGENTS.md" "$TARGET/AGENTS.md"
+
 # contexts/ directory (session mode files)
 cp -r "$SOURCE_DIR/base/contexts" "$TARGET/contexts"
 
@@ -289,7 +295,7 @@ echo -e "Next steps:"
 echo -e "  1. ${YELLOW}Edit CLAUDE.md${NC} — Fill in project-specific sections"
 echo -e "  2. ${YELLOW}Edit MEMORY.md${NC} — at $MEMORY_DIR/MEMORY.md"
 echo -e "  3. ${YELLOW}Start Claude Code${NC} in this directory"
-echo -e "  4. ${YELLOW}Try slash commands${NC} — /todo, /lessons, /verify, /learn"
+echo -e "  4. ${YELLOW}Try slash commands${NC} — /todo, /lessons, /verify, /learn, /orchestrate"
 echo -e "  5. ${YELLOW}Context modes${NC} — 'research 모드로 진행' 또는 contexts/*.md 참조"
 echo -e "  6. ${YELLOW}Agent reference${NC} — agents/*.md 참조"
 echo ""

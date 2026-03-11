@@ -19,7 +19,7 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 
 | Preset | 용도 | 특화 기능 | Slash Commands |
 |--------|------|----------|----------------|
-| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ | `/todo` `/lessons` `/update-note` `/link-notes` `/verify` `/checkpoint` `/compact` `/learn` |
+| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ + orchestrator | `/todo` `/lessons` `/update-note` `/link-notes` `/verify` `/checkpoint` `/compact` `/learn` `/orchestrate` |
 | `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 skill_graph, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` `/quality-gate` |
 | `research` | ML/DL 연구 | 6단계 실험 프로세스, Claim-Evidence 규율, 강한 baseline/ablation, 재현성 추적, literature/idea 템플릿 | + `/experiment` `/analyze` |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
@@ -157,6 +157,7 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 | `/checkpoint` | git 기반 작업 체크포인트 생성/검증/목록 관리 |
 | `/compact` | 전략적 컨텍스트 컴팩션 판단 가이드 (언제 /compact할지 안내) |
 | `/learn` | 세션 학습 — 패턴 관찰(`observe`), 교훈 추출(`extract`), 지식 승격(`promote`), 현황(`status`) |
+| `/orchestrate` | 멀티에이전트 오케스트레이터 — 3개+ 독립 파일 작업을 Codex CLI 에이전트에 병렬 분배 |
 
 ### Dev 전용
 
@@ -279,7 +280,19 @@ your-project/
 │       ├── verify/SKILL.md       # /verify
 │       ├── checkpoint/SKILL.md   # /checkpoint
 │       ├── compact/SKILL.md      # /compact
-│       └── learn/SKILL.md        # /learn
+│       ├── learn/SKILL.md        # /learn
+│       └── orchestrate/SKILL.md # /orchestrate
+├── orchestrator/                 # 멀티에이전트 오케스트레이션 모듈
+│   ├── __init__.py
+│   ├── __main__.py               # python -m orchestrator
+│   ├── config.py                 # 환경변수 기반 설정
+│   ├── session.py                # 세션 라이프사이클
+│   ├── protocol.py               # Markdown 기반 통신 프로토콜
+│   ├── agent.py                  # Codex 에이전트 프로세스 관리
+│   ├── monitor.py                # 멀티에이전트 모니터링
+│   ├── merge.py                  # Git 브랜치 머지
+│   └── cli.py                    # CLI 엔트리포인트
+├── AGENTS.md                     # Codex 에이전트 가이드
 ├── agents/                       # 에이전트 정의
 │   ├── planner.md                # 계획 수립 전문가 (opus)
 │   └── code-reviewer.md          # 코드 리뷰 전문가 (sonnet)

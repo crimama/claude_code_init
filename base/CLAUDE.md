@@ -57,6 +57,8 @@ Input → Processing → Output
 
 에이전트 호출: Subagent Strategy에 따라 서브에이전트로 실행하거나 참조 문서로 활용.
 
+**멀티에이전트 오케스트레이션**: 3개 이상 독립 파일에 걸친 작업은 `/orchestrate` 스킬로 Codex CLI 에이전트에 병렬 분배 가능. `orchestrator/` 모듈이 세션 관리, 에이전트 실행, 브랜치 머지를 처리한다. 상세는 `AGENTS.md` 참조.
+
 ## Context Modes
 
 세션 중 작업 모드 전환. `contexts/` 디렉토리의 모드 파일 참조.
