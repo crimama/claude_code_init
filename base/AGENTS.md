@@ -60,8 +60,20 @@ If full verification is too heavy, state exactly what was and was not verified.
 ### Agents (`agents/` directory)
 | Agent | Model | Purpose |
 |-------|-------|---------|
-| planner | opus | Implementation planning |
+| planner | opus | Implementation planning, scope & constraints |
+| builder | sonnet | Execute plan.md, record changes in implementation-notes.md |
+| reviewer | sonnet | Validate results against success criteria, write review-findings.md |
 | code-reviewer | sonnet | Code quality/security review |
+
+### Planner / Builder / Reviewer Protocol
+
+Multi-agent work uses role separation to prevent conflicts:
+
+1. **planner** writes scope, constraints, and success criteria in `plan.md`
+2. **builder** works only from `plan.md`, records changes in `implementation-notes.md`
+3. **reviewer** reads results + criteria only, writes verdicts in `review-findings.md`
+4. No two roles edit the same file simultaneously
+5. Human records final decisions in `decision-log.md`
 
 ### Context Modes (`contexts/` directory)
 | Mode | File | Focus |
@@ -69,6 +81,7 @@ If full verification is too heavy, state exactly what was and was not verified.
 | dev | `contexts/dev.md` | Implementation — code first |
 | research | `contexts/research.md` | Exploration — understand first |
 | review | `contexts/review.md` | Quality, security, maintainability |
+| cowork | `contexts/cowork.md` | File-based collaboration — plan.md/handoff.md/outputs/ |
 
 ## Codex Mapping For Existing Claude Skills
 

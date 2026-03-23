@@ -74,18 +74,56 @@ npm run format
 
 ---
 
+## Context Engineering
+
+이 프로젝트에서 Claude의 행동을 결정하는 것은 단일 프롬프트가 아니라 **문맥의 조합**이다:
+- **CLAUDE.md** — 프로젝트 규칙과 구조
+- **rules/** — 경로별·스코프별 세부 규칙
+- **hooks/** — 자동 실행 품질 관리
+- **templates/** — 산출물 구조 표준
+- **contexts/** — 세션 모드별 행동 지침
+
+### Context Sandwich 패턴
+1. 글로벌 규칙 (CLAUDE.md, settings.json) — 앞
+2. 작업 문맥 (현재 파일, plan.md) — 가운데
+3. 제약조건 (approval gate, guardrail) — 뒤
+
+---
+
+## Cowork File Structure
+
+긴 작업이나 멀티 세션 작업은 파일 기반 작업면으로 관리한다.
+
+```
+project/
+├── plan.md          # 작업 계획 — 제약, 할 일, 성공 기준
+├── handoff.md       # 인수인계 상태
+├── outputs/         # 산출물
+└── decision-log.md  # 의사결정 기록 (선택)
+```
+
+---
+
 ## Agents
 
 프로젝트에서 활용 가능한 전문 에이전트. `agents/` 디렉토리에 정의.
 
 | 에이전트 | 모델 | 용도 | 활성화 시점 |
 |---------|------|------|-----------|
-| planner | opus | 구현 계획 수립 | 3단계+ 작업, 아키텍처 결정 |
+| planner | opus | 구현 계획 수립, 제약·범위 정의 | 3단계+ 작업, 아키텍처 결정 |
+| builder | sonnet | plan.md 기반 구현, 변경 기록 | planner 계획 확정 후 |
+| reviewer | sonnet | 결과물 검증, 판별 | builder 작업 완료 후 |
 | code-reviewer | sonnet | 코드 품질/보안 리뷰 | 코드 변경 후 |
 | security-reviewer | sonnet | OWASP Top 10 보안 검토 | 인증/입력/API 코드 변경 후 |
 | build-error-resolver | sonnet | 빌드/타입 에러 해결 | 빌드 실패 시 |
 
 에이전트 호출: Subagent Strategy에 따라 서브에이전트로 실행하거나 참조 문서로 활용.
+
+### Planner / Builder / Reviewer 프로토콜
+1. **planner** → `plan.md` 작성
+2. **builder** → `plan.md` 기준 구현, `implementation-notes.md` 기록
+3. **reviewer** → `review-findings.md`에 판별
+4. **human** → `decision-log.md`에 최종 판단
 
 ## Context Modes
 
@@ -96,6 +134,7 @@ npm run format
 | dev | `contexts/dev.md` | 구현 집중 — 코드 먼저, 설명 후 |
 | research | `contexts/research.md` | 탐색 집중 — 이해 먼저, 코드 후 |
 | review | `contexts/review.md` | 리뷰 집중 — 품질, 보안, 유지보수성 |
+| cowork | `contexts/cowork.md` | 파일 기반 협업 — plan.md/handoff.md/outputs/ |
 
 활성화: "이 세션은 [모드] 모드로 진행합니다" 또는 해당 파일 참조 요청.
 
@@ -253,8 +292,27 @@ skill_graph/
 
 ---
 
+## Governance
+
+### 고위험 작업 등급표
+| 등급 | 예시 | 승인 방식 |
+|------|------|----------|
+| 낮음 | 파일 읽기, 테스트 추가, 내부 초안 | 자동 실행 |
+| 중간 | 코드 리팩터링, 보고서 생성 | 사람 검토 후 실행 |
+| 높음 | 프로덕션 배포, 고객 발송, 권한 변경 | 사람 승인 필수 |
+
+### 최소 감사 흔적
+1. `outputs/` — 산출물
+2. `work-log.md` — 실행 이력
+3. `handoff.md` — 인수인계 상태
+4. `decision-log.md` — 결정 기록
+
+---
+
 ## Core Principles
 
 - **Simplicity First**: 모든 변경은 가능한 한 단순하게. 최소한의 코드에만 영향을 줄 것
 - **No Laziness**: 근본 원인을 찾아라. 임시방편 금지. 시니어 개발자 기준을 적용
 - **Minimal Impact**: 변경은 필요한 것만. 불필요한 버그 유입 방지
+- **Auditability**: 비자명한 작업은 흔적을 남긴다
+- **Human in the Loop**: 고위험 작업은 사람 승인 없이 실행하지 않는다

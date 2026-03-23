@@ -11,6 +11,31 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 <!-- 프로젝트를 한 문단으로 설명. Claude가 맥락을 빠르게 파악하는 데 사용. -->
 
+## Context Engineering
+
+<!-- 프롬프트는 "지금 이렇게 말할지"의 문제, Context는 "무엇을 같이 읽힐지"의 문제 -->
+
+이 프로젝트에서 Claude의 행동을 결정하는 것은 단일 프롬프트가 아니라 **문맥의 조합**이다:
+
+- **CLAUDE.md** — 프로젝트 규칙과 구조 (헌법)
+- **rules/** — 경로별·스코프별 세부 규칙
+- **hooks/** — 자동 실행 품질 관리
+- **templates/** — 산출물 구조 표준
+- **contexts/** — 세션 모드별 행동 지침
+
+### Context Sandwich 패턴
+프롬프트 구성 시 아래 순서를 따른다:
+1. **글로벌 규칙** (CLAUDE.md, settings.json) — 앞에
+2. **작업 문맥** (현재 파일, plan.md, 관련 context) — 가운데
+3. **제약조건** (approval gate, guardrail, stop rule) — 뒤에
+
+### Harness Engineering
+모델의 행동은 프롬프트만이 아니라 **실행 환경 자체의 설계**로 제어한다:
+- `settings.json` — 권한, 허용 명령, plugin 제한
+- `hooks/` — 이벤트 기반 자동 개입
+- approval gate — 고위험 작업 전 사람 승인
+- sandbox — 격리 실행 환경
+
 ## Commands
 
 ```bash
@@ -46,16 +71,49 @@ Input → Processing → Output
 
 ---
 
+## Cowork File Structure
+
+긴 작업이나 멀티 세션 작업은 **파일 기반 작업면**으로 관리한다. 세션이 바뀌어도 맥락이 유지된다.
+
+```
+project/
+├── plan.md          # 현재 작업 계획 — 제약, 할 일, 바지 않을 입출력
+├── handoff.md       # 인수인계 상태 — 어디까지 했는지, 다음에 볼 파일
+├── outputs/         # 최종 산출물 모아두는 곳
+├── decision-log.md  # 의사결정 기록 (선택)
+└── work-log.md      # 작업 이력 (선택)
+```
+
+**규칙:**
+- 3단계 이상 작업은 `plan.md` 먼저 작성
+- 세션 종료 전 `handoff.md` 갱신 필수
+- 사람이 최종 승인하는 결정은 `decision-log.md`에 기록
+- 템플릿: `templates/` 디렉토리 참조
+
+---
+
 ## Agents
 
 프로젝트에서 활용 가능한 전문 에이전트. `agents/` 디렉토리에 정의.
 
 | 에이전트 | 모델 | 용도 | 활성화 시점 |
 |---------|------|------|-----------|
-| planner | opus | 구현 계획 수립 | 3단계+ 작업, 아키텍처 결정 |
+| planner | opus | 구현 계획 수립, 제약·범위 정의 | 3단계+ 작업, 아키텍처 결정 |
+| builder | sonnet | plan.md 기반 구현 수행 | planner 계획 확정 후 |
+| reviewer | sonnet | 결과물 검증, 판별 | builder 작업 완료 후 |
 | code-reviewer | sonnet | 코드 품질/보안 리뷰 | 코드 변경 후 |
 
 에이전트 호출: Subagent Strategy에 따라 서브에이전트로 실행하거나 참조 문서로 활용.
+
+### Planner / Builder / Reviewer 프로토콜
+
+멀티에이전트 작업 시 역할 분리로 충돌을 방지한다:
+
+1. **planner**는 `plan.md`에 변위, 현재 기준, 제약 범위를 잡아 적는다
+2. **builder**는 `plan.md`만 기준으로 작업하고 변경 내용을 `implementation-notes.md`에 남긴다
+3. **reviewer**는 결과물 + 검증 기준만 읽고 `review-findings.md`에 판별만 적는다
+4. 세 역할이 같은 파일을 동시에 편집하지 않는다
+5. 마지막 판단은 사람이 `decision-log.md`에 남긴다
 
 **멀티에이전트 오케스트레이션**: 3개 이상 독립 파일에 걸친 작업은 `/orchestrate` 스킬로 Codex CLI 에이전트에 병렬 분배 가능. `orchestrator/` 모듈이 세션 관리, 에이전트 실행, 브랜치 머지를 처리한다. 상세는 `AGENTS.md` 참조.
 
@@ -68,6 +126,8 @@ Input → Processing → Output
 | dev | `contexts/dev.md` | 구현 집중 — 코드 먼저, 설명 후 |
 | research | `contexts/research.md` | 탐색 집중 — 이해 먼저, 코드 후 |
 | review | `contexts/review.md` | 리뷰 집중 — 품질, 보안, 유지보수성 |
+| cowork | `contexts/cowork.md` | 파일 기반 협업 — plan.md/handoff.md/outputs/ 구조 |
+| autoresearch | `contexts/autoresearch.md` | 자율 실험 루프 — program.md 기반 무한 반복 실험 |
 
 활성화: "이 세션은 [모드] 모드로 진행합니다" 또는 해당 파일 참조 요청.
 
@@ -159,8 +219,42 @@ skill_graph/
 
 ---
 
+## Governance (거버넌스)
+
+### 고위험 작업 등급표
+
+| 등급 | 예시 | 승인 방식 |
+|------|------|----------|
+| 낮음 | 파일 읽기, 내부 초안 작성, 테스트 추가 | 자동 실행 가능 |
+| 중간 | 고객용 초안 작성, 주기 보고서, 코드 리팩터링 | 사람 검토 후 실행 |
+| 높음 | 프로덕션 배포, 고객 발송, 권한 변경, 민감 데이터 조회 | 사람 승인 없이 실행 금지 |
+
+### 최소 감사 흔적 (Auditability)
+
+모든 비자명한 작업은 아래 최소 흔적을 남긴다:
+1. `outputs/` — 산출물
+2. `work-log.md` — 무엇을 언제 실행했는지
+3. `approval-log.md` — 누가 언제 승인했는지 (고위험 작업)
+4. `handoff.md` — 남은 일과 다음 단계
+5. `decision-log.md` — 무엇을 왜 그렇게 결정했는지
+
+### 자동화 게이트 (Automation Gate)
+
+자동화를 붙이기 전 아래를 확인한다:
+- **Before run**: 입력 폴더가 맞는지? 정의된 출력 경로가 있는지? low-confidence 핸들링이 정의되어 있는지?
+- **Before send or deploy**: 사람이 초안을 리뷰했는지? 위험한 주장이 체크됐는지? rollback 지점이 존재하는지?
+- **After run**: 출력이 맞는 폴더에 저장됐는지? work log가 갱신됐는지? 미해결 이슈가 별도 리스트됐는지?
+
+### 거버넌스 정책 템플릿
+
+상세 정책은 `templates/governance-policy.md` 참조.
+
+---
+
 ## Core Principles
 
 - **Simplicity First**: 모든 변경은 가능한 한 단순하게. 최소한의 코드에만 영향을 줄 것
 - **No Laziness**: 근본 원인을 찾아라. 임시방편 금지. 시니어 개발자 기준을 적용
 - **Minimal Impact**: 변경은 필요한 것만. 불필요한 버그 유입 방지
+- **Auditability**: 비자명한 작업은 흔적을 남긴다. 다시 실행할 수 있는 상태를 유지한다
+- **Human in the Loop**: 고위험 작업은 사람 승인 없이 실행하지 않는다

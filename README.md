@@ -19,7 +19,7 @@ bash /tmp/claude_code_init/setup.sh industry-academia .
 
 | Preset | 용도 | 특화 기능 | Slash Commands |
 |--------|------|----------|----------------|
-| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ + orchestrator | `/todo` `/lessons` `/update-note` `/link-notes` `/verify` `/checkpoint` `/compact` `/learn` `/orchestrate` |
+| `base` | 범용 (기본값) | CLAUDE.md + MEMORY.md + tasks/ + skill_graph/ + orchestrator + Cowork 파일 + AutoResearch | `/todo` `/lessons` `/update-note` `/link-notes` `/verify` `/checkpoint` `/compact` `/learn` `/orchestrate` `/autoresearch` |
 | `dev` | 소프트웨어 개발 | 멀티에이전트 협업 (파일 잠금), 개발 중심 skill_graph, Memory Management | + `/feature` `/bugfix` `/lock-file` `/unlock-file` `/quality-gate` |
 | `research` | ML/DL 연구 | 6단계 실험 프로세스, Claim-Evidence 규율, 강한 baseline/ablation, 재현성 추적, literature/idea 템플릿 | + `/experiment` `/analyze` |
 | `industry-academia` | 산학과제 | 마일스톤 추적, 납품물 관리, 회의록, 기업 데이터 보안, Demo-ready | + `/experiment` `/meeting` `/deliverable` |
@@ -35,7 +35,7 @@ bash setup.sh industry-academia # 산학과제
 
 ## System Architecture
 
-4개 레이어로 구성된 지속 가능한 AI 협업 시스템입니다.
+5개 레이어로 구성된 지속 가능한 AI 협업 시스템입니다. Context Engineering 원칙에 기반합니다.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -61,17 +61,83 @@ bash setup.sh industry-academia # 산학과제
 │  ─ 노트 간 "## 관련 노트"로 DAG 형태 양방향 링크             │
 │  ─ tasks/lessons.md의 검증된 패턴과 연구 노트가 승격·축적되는 목적지 │
 │  ─ git tracked · 갱신 주기: 작업마다 (상세 기록 축적)        │
+├─────────────────────────────────────────────────────────┤
+│  Layer 5: Cowork 파일 구조  (작업면)                      │
+│  ─ plan.md: 작업 계획, 제약, 성공 기준                     │
+│  ─ handoff.md: 인수인계 상태, 다음 세션 진입점               │
+│  ─ outputs/: 최종 산출물                                   │
+│  ─ decision-log.md, work-log.md: 감사 흔적                │
+│  ─ git tracked · 갱신 주기: 매 세션                        │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### Layer별 역할 비교
 
-|  | CLAUDE.md | MEMORY.md | tasks/ | skill_graph/ |
-|--|-----------|-----------|--------|---------------|
-| **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 상세 기록 |
-| **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 연구 아카이브 |
-| **갱신** | 드물게 | 매 세션 | 매 작업 | 매 작업 |
-| **로드** | 전체 자동 | 200줄 자동 | 수동 참조 | 수동 참조 |
+|  | CLAUDE.md | MEMORY.md | tasks/ | skill_graph/ | Cowork 파일 |
+|--|-----------|-----------|--------|---------------|------------|
+| **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 상세 기록 | 작업면·산출물 |
+| **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 연구 아카이브 | 책상 위 서류 |
+| **갱신** | 드물게 | 매 세션 | 매 작업 | 매 작업 | 매 세션 |
+| **로드** | 전체 자동 | 200줄 자동 | 수동 참조 | 수동 참조 | 수동 참조 |
+
+---
+
+## Context Engineering
+
+Claude의 행동을 결정하는 것은 단일 프롬프트가 아니라 **문맥의 조합**입니다.
+
+### Context Sandwich 패턴
+```
+1. 글로벌 규칙 (CLAUDE.md, settings.json)     ← 앞
+2. 작업 문맥 (현재 파일, plan.md, context)      ← 가운데
+3. 제약조건 (approval gate, guardrail, stop rule) ← 뒤
+```
+
+### Harness Engineering
+모델의 행동은 프롬프트만이 아니라 **실행 환경 자체의 설계**로 제어합니다:
+- `settings.json` — 권한, 허용 명령, plugin 제한
+- `hooks/` — 이벤트 기반 자동 개입 (compact 제안, push 리마인더)
+- approval gate — 고위험 작업 전 사람 승인
+- sandbox — 격리 실행 환경
+
+---
+
+## Cowork File Structure (작업면)
+
+긴 작업이나 멀티 세션 작업은 **파일 기반 작업면**으로 관리합니다.
+
+```
+project/
+├── plan.md          # 작업 계획 — 제약, 할 일, 성공 기준
+├── handoff.md       # 인수인계 — 어디까지 했는지, 다음에 볼 파일
+├── outputs/         # 산출물 폴더
+├── decision-log.md  # 의사결정 기록 (선택)
+└── work-log.md      # 작업 이력 (선택)
+```
+
+- 3단계 이상 작업은 `plan.md` 먼저 작성
+- 세션 종료 전 `handoff.md` 갱신
+- 고위험 결정은 `decision-log.md`에 기록
+- 템플릿은 `templates/` 디렉토리에 포함
+
+---
+
+## Governance (거버넌스)
+
+| 등급 | 예시 | 승인 방식 |
+|------|------|----------|
+| 낮음 | 파일 읽기, 내부 초안, 테스트 | 자동 실행 |
+| 중간 | 고객 초안, 보고서, 리팩터링 | 사람 검토 후 실행 |
+| 높음 | 배포, 고객 발송, 권한 변경, 민감 데이터 | 사람 승인 필수 |
+
+### 최소 감사 흔적
+1. `outputs/` — 산출물
+2. `work-log.md` — 실행 이력
+3. `approval-log.md` — 승인 기록 (고위험)
+4. `handoff.md` — 인수인계 상태
+5. `decision-log.md` — 결정 기록
+
+상세 정책 템플릿: `templates/governance-policy.md`
 
 ---
 
@@ -98,8 +164,20 @@ bash setup.sh industry-academia # 산학과제
 
 | Agent | Model | 용도 | 활성화 시점 |
 |-------|-------|------|-----------|
-| `planner` | opus | 구현 계획 수립, 단계 분해, 리스크 식별 | 3단계+ 작업, 아키텍처 결정 |
+| `planner` | opus | 구현 계획 수립, 제약·범위 정의, 리스크 식별 | 3단계+ 작업, 아키텍처 결정 |
+| `builder` | sonnet | plan.md 기반 구현, implementation-notes.md 기록 | planner 계획 확정 후 |
+| `reviewer` | sonnet | 결과물 검증, review-findings.md 기록 | builder 작업 완료 후 |
 | `code-reviewer` | sonnet | 코드 품질/보안 리뷰 (CRITICAL→LOW 체크리스트) | 코드 변경 후 |
+
+### Planner / Builder / Reviewer 프로토콜
+
+멀티에이전트 작업 시 역할 분리로 충돌을 방지합니다:
+1. **planner** → `plan.md` (변위, 기준, 제약)
+2. **builder** → `implementation-notes.md` (plan 기준 구현, 변경 기록)
+3. **reviewer** → `review-findings.md` (결과 검증, 판별)
+4. **human** → `decision-log.md` (최종 판단)
+
+세 에이전트가 같은 파일을 동시에 편집하지 않습니다.
 
 ### Dev 전용 (추가)
 
@@ -119,6 +197,8 @@ bash setup.sh industry-academia # 산학과제
 | **dev** | `contexts/dev.md` | 구현 집중 | 코드 먼저, 설명 후. 작동 → 올바르게 → 깔끔하게 |
 | **research** | `contexts/research.md` | 탐색/조사 | 이해 먼저, 코드 후. 가설 → 증거 → 요약 |
 | **review** | `contexts/review.md` | PR 리뷰 | 품질/보안 집중. 심각도순 정렬, 수정안 제시 |
+| **cowork** | `contexts/cowork.md` | 파일 기반 협업 | plan.md/handoff.md/outputs/ 구조. 멀티에이전트 프로토콜 |
+| **autoresearch** | `contexts/autoresearch.md` | 자율 실험 루프 | Karpathy Loop: program.md 기반 무한 반복 실험 |
 
 **활성화**: "이 세션은 research 모드로 진행합니다" 또는 해당 파일 참조 요청.
 
@@ -158,6 +238,7 @@ Claude Code에서 `/커맨드명` 으로 바로 사용할 수 있습니다.
 | `/compact` | 전략적 컨텍스트 컴팩션 판단 가이드 (언제 /compact할지 안내) |
 | `/learn` | 세션 학습 — 패턴 관찰(`observe`), 교훈 추출(`extract`), 지식 승격(`promote`), 현황(`status`) |
 | `/orchestrate` | 멀티에이전트 오케스트레이터 — 3개+ 독립 파일 작업을 Codex CLI 에이전트에 병렬 분배 |
+| `/autoresearch` | Karpathy-style 자율 실험 루프 (`setup` `run` `status` `results`). program.md 기반 무한 반복 실험 |
 
 ### Dev 전용
 
@@ -243,6 +324,55 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 
 ---
 
+## AutoResearch — 자율 실험 루프
+
+[Andrej Karpathy의 autoresearch](https://github.com/karpathy/autoresearch) 패턴을 통합한 자율 실험 시스템입니다. Python이 아닌 `program.md`로 연구 방향을 "프로그래밍"합니다.
+
+### The Karpathy Loop
+
+```
+LOOP FOREVER:
+  Read → Hypothesize → Modify → Train → Evaluate → Keep/Discard → Repeat
+```
+
+- **5분 학습** × 무한 반복 = ~12 실험/시간 = ~100 실험/하룻밤
+- 한 실험 = 한 변경 (single-claim test)
+- 개선되면 keep, 아니면 discard, 크래시면 간단 수정 후 재시도
+- **절대 멈추지 않는다** — 사용자가 수동 중단할 때까지
+
+### 핵심 파일
+
+| 파일 | 역할 | 누가 수정 |
+|------|------|----------|
+| `program.md` | 연구 목표, 스코프, 실행 환경, 판정 기준 정의 | 사람 |
+| `train.py` (등) | 에이전트의 샌드박스 — 아키텍처, 하이퍼파라미터 등 | 에이전트 |
+| `prepare.py` (등) | 고정 상수, 평가 함수, 데이터 로더 | 수정 금지 |
+| `results.tsv` | 실험 결과 로그 (git 미추적) | 에이전트 |
+
+### 사용법
+
+```bash
+# 1. program.md 작성 (templates/program.md 참조)
+# 2. autoresearch 모드 활성화
+/autoresearch setup     # 브랜치 생성, 베이스라인 측정
+/autoresearch run       # 자율 실험 루프 시작 (무한 반복)
+/autoresearch status    # 현재 진행 상황 확인
+/autoresearch results   # 전체 결과 분석 + 보고서 생성
+```
+
+### 6단계 실험 프로세스와의 관계
+
+| | AutoResearch | 6단계 프로세스 |
+|--|-------------|-------------|
+| **단계** | 탐색 (빠른 반복, 넓은 범위) | 검증 (깊은 분석, 논문 기여) |
+| **속도** | ~5분/실험 | ~수시간/실험 |
+| **기록** | results.tsv (간결) | skill_graph/experiments/ (상세) |
+| **판정** | 자동 (지표 개선 여부) | 수동 (가설 검증, 부수 발견) |
+
+**권장 워크플로우**: autoresearch로 넓게 탐색 → 유망한 결과를 6단계 프로세스로 깊게 검증
+
+---
+
 ## 6단계 실험 프로세스 (Research / Industry-Academia)
 
 ```
@@ -270,6 +400,9 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 your-project/
 ├── CLAUDE.md                     # 프로젝트 지침 + 워크플로우 규칙
 ├── MEMORY_TEMPLATE.md            # MEMORY.md 참조용 사본
+├── plan.md                       # Cowork 작업 계획
+├── handoff.md                    # Cowork 인수인계 상태
+├── outputs/                      # Cowork 산출물
 ├── .claude/
 │   ├── settings.local.json       # 프로젝트별 자동 허용 명령어 + hooks 설정
 │   └── skills/                   # Slash commands (8개)
@@ -295,11 +428,22 @@ your-project/
 ├── AGENTS.md                     # Codex 에이전트 가이드
 ├── agents/                       # 에이전트 정의
 │   ├── planner.md                # 계획 수립 전문가 (opus)
+│   ├── builder.md                # 구현 실행 전문가 (sonnet)
+│   ├── reviewer.md               # 결과물 검증 전문가 (sonnet)
 │   └── code-reviewer.md          # 코드 리뷰 전문가 (sonnet)
 ├── contexts/                     # 세션 모드 전환
 │   ├── dev.md                    # 구현 집중 모드
 │   ├── research.md               # 탐색/조사 모드
-│   └── review.md                 # PR 리뷰 모드
+│   ├── review.md                 # PR 리뷰 모드
+│   ├── cowork.md                 # 파일 기반 협업 모드
+│   └── autoresearch.md           # 자율 실험 루프 모드
+├── templates/                    # 거버넌스 · Cowork 템플릿
+│   ├── handoff.md                # 인수인계 메모 템플릿
+│   ├── work-log.md               # 작업 기록 템플릿
+│   ├── approval-log.md           # 승인 기록 템플릿
+│   ├── decision-log.md           # 의사결정 기록 템플릿
+│   ├── governance-policy.md      # AI 도구 접근 정책 템플릿
+│   └── program.md                # AutoResearch program.md 템플릿
 ├── hooks/                        # 자동 실행 훅 스크립트
 │   ├── suggest-compact.sh        # 전략적 compact 제안
 │   ├── git-push-reminder.sh      # git push 리뷰 리마인더

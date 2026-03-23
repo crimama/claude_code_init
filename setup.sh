@@ -64,7 +64,7 @@ mkdir -p "$TARGET"
 
 # ─── Copy base files ───────────────────────────────────────
 
-echo -e "${GREEN}[1/6]${NC} Copying base structure..."
+echo -e "${GREEN}[1/7]${NC} Copying base structure..."
 
 # CLAUDE.md — use preset version if exists, otherwise base
 if [ -f "$SOURCE_DIR/presets/$PRESET/CLAUDE.md" ]; then
@@ -102,6 +102,9 @@ cp "$SOURCE_DIR/base/AGENTS.md" "$TARGET/AGENTS.md"
 # contexts/ directory (session mode files)
 cp -r "$SOURCE_DIR/base/contexts" "$TARGET/contexts"
 
+# templates/ directory (handoff, governance, decision-log, etc.)
+cp -r "$SOURCE_DIR/base/templates" "$TARGET/templates"
+
 # agents/ directory (base first, then preset overlay)
 cp -r "$SOURCE_DIR/base/agents" "$TARGET/agents"
 if [ -d "$SOURCE_DIR/presets/$PRESET/agents" ]; then
@@ -122,7 +125,7 @@ fi
 
 # ─── MEMORY.md setup ──────────────────────────────────────
 
-echo -e "${GREEN}[2/6]${NC} Preparing MEMORY.md template..."
+echo -e "${GREEN}[2/7]${NC} Preparing MEMORY.md template..."
 
 # Determine project memory path
 TARGET_ABS=$(realpath "$TARGET")
@@ -150,7 +153,7 @@ fi
 
 # ─── Preset-specific extras ────────────────────────────────
 
-echo -e "${GREEN}[3/6]${NC} Setting up tasks/ directory..."
+echo -e "${GREEN}[3/7]${NC} Setting up tasks/ directory..."
 
 # ─── tasks/ setup ─────────────────────────────────────────
 
@@ -208,7 +211,7 @@ EOF
     echo -e "  ${GREEN}Created:${NC} tasks/lessons.md"
 fi
 
-echo -e "${GREEN}[4/6]${NC} Applying preset-specific settings..."
+echo -e "${GREEN}[4/7]${NC} Applying preset-specific settings..."
 
 case "$PRESET" in
     dev)
@@ -239,7 +242,44 @@ esac
 
 # ─── Skills ───────────────────────────────────────────────
 
-echo -e "${GREEN}[5/6]${NC} Installing Claude Code skills & agents..."
+echo -e "${GREEN}[5/7]${NC} Setting up Cowork file structure..."
+
+# Cowork file structure (plan.md, handoff.md, outputs/)
+if [ ! -f "$TARGET/plan.md" ]; then
+    cat > "$TARGET/plan.md" << 'EOF'
+# Plan
+
+<!-- 현재 작업 계획. 제약, 할 일, 바지 않을 입출력을 명시. -->
+<!-- planner 에이전트가 작성하거나 사람이 직접 작성. -->
+
+## 제약
+
+-
+
+## 할 일
+
+- [ ]
+
+## 성공 기준
+
+-
+
+## 바지 않을 것
+
+-
+EOF
+    echo -e "  ${GREEN}Created:${NC} plan.md"
+fi
+
+if [ ! -f "$TARGET/handoff.md" ]; then
+    cp "$SOURCE_DIR/base/templates/handoff.md" "$TARGET/handoff.md"
+    echo -e "  ${GREEN}Created:${NC} handoff.md"
+fi
+
+mkdir -p "$TARGET/outputs"
+touch "$TARGET/outputs/.gitkeep"
+
+echo -e "${GREEN}[6/7]${NC} Installing Claude Code skills & agents..."
 
 if [ -d "$TARGET/.claude/skills" ]; then
     SKILL_COUNT=$(find "$TARGET/.claude/skills" -name 'SKILL.md' | wc -l)
@@ -261,8 +301,8 @@ if [ -d "$TARGET/agents" ]; then
     done
 fi
 
-echo -e "  ${GREEN}Installed 3 context modes:${NC}"
-echo -e "    ${YELLOW}dev${NC}, ${YELLOW}research${NC}, ${YELLOW}review${NC}"
+echo -e "  ${GREEN}Installed 5 context modes:${NC}"
+echo -e "    ${YELLOW}dev${NC}, ${YELLOW}research${NC}, ${YELLOW}review${NC}, ${YELLOW}cowork${NC}, ${YELLOW}autoresearch${NC}"
 
 HOOK_COUNT=$(find "$TARGET/hooks" -name '*.sh' 2>/dev/null | wc -l)
 echo -e "  ${GREEN}Installed ${HOOK_COUNT} hooks:${NC}"
@@ -273,7 +313,7 @@ done
 
 # ─── Summary ──────────────────────────────────────────────
 
-echo -e "${GREEN}[6/6]${NC} Done!"
+echo -e "${GREEN}[7/7]${NC} Done!"
 echo ""
 echo -e "${BLUE}Created structure:${NC}"
 echo ""
