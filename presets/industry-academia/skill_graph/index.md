@@ -1,33 +1,32 @@
 # Skill Graph Index
 
-> 프로젝트 변경 기록의 키워드 기반 인덱스.
-> 키워드 → 문서 링크로 그래프 탐색 가능.
-> 새 문서 추가 시 이 파일도 함께 갱신할 것.
+> 산학 위키의 탐색 진입점.
+> 문서 본문은 wiki, 관계 의미는 `schema.md`의 typed relation으로 해석합니다.
+> 새 문서 추가 시 이 파일과 `log.md`를 함께 갱신합니다.
 
 ---
 
-## 키워드 그래프
+## 운영 레이어
+
+- `README.md` — 산학 위키 운영 방식
+- `schema.md` — meeting / deliverable / experiment 관계 규약
+- `log.md` — append-only 변경 이력
+
+---
+
+## 관계 그래프
 
 ```
-<!-- ASCII 다이어그램으로 키워드 간 관계를 시각화 -->
-<!-- 예시:
-  ┌──────────┐      ┌────────────┐
-  │ keyword1 │◀────▶│  keyword2  │
-  └─────┬────┘      └─────┬──────┘
-        │                 │
-   ┌────▼────┐     ┌─────▼──────┐
-   │ keyword3│     │  keyword4  │
-   └─────────┘     └────────────┘
--->
+<!-- typed relation을 기준으로 ASCII 다이어그램을 유지 -->
 ```
 
 ---
 
-## 키워드 → 문서 매핑
+## 문서 카탈로그
 
-| 키워드 | 문서 | 카테고리 |
-|--------|------|----------|
-| <!-- **keyword** | [문서 제목](category/YYYY-MM-DD_name.md) | category --> |
+| 문서 ID | 문서 | note_type | 상태 | 핵심 키워드 |
+|---------|------|-----------|------|-------------|
+| <!-- `del-20260407-midterm-report` | [문서 제목](deliverables/YYYY-MM-DD_name.md) | deliverable | done | `report` `milestone` --> |
 
 ---
 
@@ -56,20 +55,15 @@ _(아직 없음)_
 
 ---
 
-## 문서 간 연결 (관련 노트)
+## relation registry
 
-```
-<!-- 문서 간 선행/후속 관계를 흐름도로 표현 -->
-<!-- 예시:
-meetings/YYYY-MM-DD_kickoff.md
-        │
-        ▼ (선행)
-experiments/YYYY-MM-DD_exp.md
-        │
-        ▼ (후속)
-deliverables/YYYY-MM-DD_report.md
--->
-```
+| relation | 의미 |
+|----------|------|
+| `depends_on` | 납품물/실험/회의 간 선행 필요 |
+| `derived_from` | 회의나 실험 결과에서 파생 |
+| `evidence_for` | 실험이 납품 주장 지원 |
+| `blocked_by` | 승인/데이터/버그로 차단 |
+| `related_to` | 주제 연결 |
 
 ---
 
@@ -77,4 +71,4 @@ deliverables/YYYY-MM-DD_report.md
 
 | 날짜 | 문서 | 요약 |
 |------|------|------|
-<!-- | YYYY-MM-DD | [제목](path) | 한 줄 요약 | -->
+<!-- | YYYY-MM-DD | [문서 제목](path) | 한 줄 요약 | -->
