@@ -20,21 +20,34 @@ allowed-tools:
 
 ## 동작
 
-1. `$ARGUMENTS`에서 `<category>`와 `<short-title>` 파싱
-   - 인자 없으면 → 사용 가능한 카테고리 목록 출력 후 종료
-   - category만 있으면 → short-title 입력 요청
-2. 해당 카테고리의 `_TEMPLATE.md` 읽기
-3. 오늘 날짜(YYYY-MM-DD)와 제목을 반영하여 새 파일 생성:
-   - 경로: `skill_graph/<category>/YYYY-MM-DD_<short-title>.md`
-4. 생성된 파일 경로 출력
+1. 기본 실행 경로:
+
+   ```bash
+   python tools/skill_graph_tool.py create <category> "<short-title>" --link
+   ```
+
+2. 유틸리티가 수행하는 일:
+   - 해당 카테고리의 `_TEMPLATE.md`와 `skill_graph/schema.md` 읽기
+   - `skill_graph/<category>/YYYY-MM-DD_<short-title>.md` 생성
+   - frontmatter의 `id`, `title`, `note_type`, `status`, `keywords`, `relations`, `last_verified` 채우기
+   - `skill_graph/index.md` 문서 카탈로그 갱신
+   - `skill_graph/log.md`에 ingest 로그 추가
+   - `--link`가 있으면 새 노트 기준으로 related link 보강
+
+## sync
+
+노트를 수동 수정한 뒤 카탈로그와 링크를 다시 맞추려면 아래 명령을 사용합니다.
+
+```bash
+python tools/skill_graph_tool.py sync
+python tools/skill_graph_tool.py sync skill_graph/features/YYYY-MM-DD_name.md
+```
 
 ## 규칙
 
 - 파일명에 공백 대신 하이픈(`-`) 사용
 - 템플릿의 플레이스홀더(`[...]`, `YYYY-MM-DD`)를 실제 값으로 치환
-- `## 관련 노트` 섹션: 생성 직후 키워드 기반 자동 연결 시도
-  1. 새 노트의 제목/키워드에서 핵심 키워드 추출
-  2. skill_graph/ 내 기존 노트와 키워드 겹침 검사
-  3. 겹치는 키워드 2개 이상인 노트를 양방향 링크
-  4. 관련 노트 없으면 빈 채로 유지
+- 새 노트는 frontmatter를 유지하고 `relations` 키를 비워 두더라도 남겨둘 것
+- `--link` 사용 시 `## 관련 노트`와 `relations.related_to`를 함께 갱신
 - 이미 같은 이름의 파일이 있으면 경고 후 사용자에게 확인
+- 본문 링크만 추가하지 말고 대응되는 frontmatter relation도 함께 갱신

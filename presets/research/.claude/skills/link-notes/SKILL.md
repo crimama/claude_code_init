@@ -6,6 +6,7 @@ allowed-tools:
   - Edit
   - Glob
   - Grep
+  - Bash
 ---
 
 # /link-notes
@@ -40,11 +41,36 @@ if |overlap| >= 2 → 관련 노트로 판정
 
 ## 동작 절차
 
-1. `skill_graph/` 내 모든 `.md` 파일 수집 (`_TEMPLATE.md` 제외)
-2. 각 파일에서 키워드 추출 (3가지 소스)
-3. 모든 파일 쌍에 대해 키워드 겹침 검사
-4. 겹침 >= 2인 쌍에 대해 양방향 링크 추가
-5. `## 관련 노트` 섹션에 링크 삽입
+1. 기본 실행 경로:
+
+   ```bash
+   python tools/skill_graph_tool.py link [target-file]
+   ```
+
+2. 유틸리티가 수행하는 일:
+   - `skill_graph/` 내 `.md` 파일 수집 (`_TEMPLATE.md`, `README.md`, `schema.md`, `index.md`, `log.md` 제외)
+   - `skill_graph/schema.md`를 읽어 허용된 relation 타입 확인
+   - 키워드 / heading / 경로 토큰 기반 겹침 계산
+   - 겹침 >= 2인 쌍에 대해 양방향 `relations.related_to` 보강
+   - `## 관련 노트` 섹션의 자동 링크 라인 갱신
+
+## lint
+
+연결 후 정합성 검사는 아래 명령으로 수행합니다.
+
+```bash
+python tools/skill_graph_tool.py lint
+python tools/skill_graph_tool.py lint skill_graph/ideas/YYYY-MM-DD_name.md
+```
+
+## sync
+
+수동 편집으로 인한 drift를 복구하려면 아래 명령을 사용합니다.
+
+```bash
+python tools/skill_graph_tool.py sync
+python tools/skill_graph_tool.py sync skill_graph/ideas/YYYY-MM-DD_name.md
+```
 
 ## 규칙
 

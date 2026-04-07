@@ -37,7 +37,9 @@ allowed-tools:
 1. `tasks/lessons.md`에서 해당 topic 관련 교훈 식별
 2. `skill_graph/analysis/<topic>/_lessons.md` 파일 생성 또는 업데이트
    - `_LESSONS_TEMPLATE.md` 참조
-3. 승격 완료 후 원본 교훈에 `(→ 승격됨)` 표시
+   - frontmatter의 `relations.derived_from`에 source note 또는 lesson source를 기록
+3. `skill_graph/index.md`와 `skill_graph/log.md`에도 승격 사실 반영
+4. 승격 완료 후 원본 교훈에 `(→ 승격됨)` 표시
 
 ## 규칙
 
