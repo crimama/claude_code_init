@@ -56,11 +56,11 @@ bash setup.sh industry-academia # 산학과제
 │  ─ git tracked · 세션 시작 시 반드시 먼저 확인               │
 │  ─ 갱신 주기: 매 작업                                       │
 ├─────────────────────────────────────────────────────────┤
-│  Layer 4: skill_graph/  (지식 그래프)                     │
-│  ─ experiments/ · analysis/ · bugfix/ · ideas/ · papers/  │
-│  ─ 노트 간 "## 관련 노트"로 DAG 형태 양방향 링크             │
-│  ─ tasks/lessons.md의 검증된 패턴과 연구 노트가 승격·축적되는 목적지 │
-│  ─ git tracked · 갱신 주기: 작업마다 (상세 기록 축적)        │
+│  Layer 4: skill_graph/  (LLM wiki + typed graph)         │
+│  ─ raw source를 바탕으로 LLM이 유지하는 persistent wiki      │
+│  ─ index.md(탐색) · schema.md(관계 규칙) · log.md(이력)      │
+│  ─ 본문은 markdown wiki, 관계는 typed metadata로 관리        │
+│  ─ git tracked · 갱신 주기: 작업마다 (지식 축적·정합성 유지) │
 ├─────────────────────────────────────────────────────────┤
 │  Layer 5: Cowork 파일 구조  (작업면)                      │
 │  ─ plan.md: 작업 계획, 제약, 성공 기준                     │
@@ -75,7 +75,7 @@ bash setup.sh industry-academia # 산학과제
 
 |  | CLAUDE.md | MEMORY.md | tasks/ | skill_graph/ | Cowork 파일 |
 |--|-----------|-----------|--------|---------------|------------|
-| **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 상세 기록 | 작업면·산출물 |
+| **내용** | 규칙·구조 | 상태·요약 | 계획·교훈 | 누적 지식 위키 + 관계 그래프 | 작업면·산출물 |
 | **비유** | 헌법 | 작업 일지 | 스프린트 보드 | 연구 아카이브 | 책상 위 서류 |
 | **갱신** | 드물게 | 매 세션 | 매 작업 | 매 작업 | 매 세션 |
 | **로드** | 전체 자동 | 200줄 자동 | 수동 참조 | 수동 참조 | 수동 참조 |
@@ -298,8 +298,10 @@ MEMORY.md (Key Experiment Results)       ← 매 세션 자동 로드
 
 ## Keyword Linking (노트 자동 연결)
 
-`skill_graph/`의 노트들은 `## 관련 노트` 섹션을 통해 DAG 형태로 연결됩니다.
-`/link-notes` 스킬과 `/update-note` 생성 시 자동 연결이 이를 지원합니다.
+`skill_graph/`는 Karpathy식 LLM wiki 패턴을 따라 운영됩니다.
+문서 본문은 markdown wiki로 유지하고, 관계 의미는 frontmatter의 typed relation으로 관리합니다.
+`index.md`는 탐색 진입점, `schema.md`는 관계 규약, `log.md`는 ingest/query/lint 이력을 담당합니다.
+`/link-notes`와 `/update-note`는 이 구조를 기준으로 노트를 생성·연결합니다.
 
 ### 키워드 소스 (우선순위)
 
@@ -444,6 +446,8 @@ your-project/
 │   ├── decision-log.md           # 의사결정 기록 템플릿
 │   ├── governance-policy.md      # AI 도구 접근 정책 템플릿
 │   └── program.md                # AutoResearch program.md 템플릿
+├── tools/
+│   └── skill_graph_tool.py       # note create/link 유틸리티
 ├── hooks/                        # 자동 실행 훅 스크립트
 │   ├── suggest-compact.sh        # 전략적 compact 제안
 │   ├── git-push-reminder.sh      # git push 리뷰 리마인더
@@ -452,6 +456,10 @@ your-project/
 │   ├── todo.md                   # 세션 계획·체크리스트·결과
 │   └── lessons.md                # 누적 교훈 (수정/지적 → 패턴 추출)
 └── skill_graph/
+    ├── README.md                 # 운영 개요 (raw/wiki/schema/log)
+    ├── schema.md                 # typed relation 규약
+    ├── log.md                    # append-only 작업 이력
+    ├── index.md                  # 탐색용 카탈로그
     ├── experiments/
     │   └── _TEMPLATE.md          # 6단계 실험 보고서 템플릿
     ├── analysis/
@@ -476,6 +484,10 @@ your-project/
 │   └── build-error-resolver.md   # 빌드 에러 해결 (sonnet)
 ├── .locks/                       # 멀티에이전트 파일 잠금 디렉토리
 └── skill_graph/
+    ├── README.md                 # 개발 위키 운영 가이드
+    ├── schema.md                 # feature/bugfix/decision 관계 규약
+    ├── log.md                    # append-only 작업 이력
+    ├── index.md                  # 탐색용 카탈로그
     ├── features/                 # 신규 기능 구현 기록
     ├── bugfix/                   # 버그 수정 (원인 분석 포함)
     ├── refactor/                 # 리팩토링 (Before/After)
@@ -492,6 +504,10 @@ your-project/
 │   ├── experiment/SKILL.md       # /experiment
 │   └── analyze/SKILL.md          # /analyze
 └── skill_graph/
+    ├── README.md                 # 연구 위키 운영 가이드
+    ├── schema.md                 # idea/paper/experiment 관계 규약
+    ├── log.md                    # append-only 작업 이력
+    ├── index.md                  # 탐색용 카탈로그
     ├── experiments/_TEMPLATE.md  # 6단계 + config_diff + single-claim test
     ├── ideas/_TEMPLATE.md        # novelty screen + risk screen
     └── papers/_TEMPLATE.md       # related work / competitor / baseline 정리
@@ -512,6 +528,10 @@ your-project/
 ├── demo/              # 기업 발표·데모용
 ├── reports/           # 자동 생성 성능 리포트
 └── skill_graph/
+    ├── README.md                 # 산학 위키 운영 가이드
+    ├── schema.md                 # meeting/deliverable/experiment 관계 규약
+    ├── log.md                    # append-only 작업 이력
+    ├── index.md                  # 탐색용 카탈로그
     ├── deliverables/  # 납품물 관련 기록
     └── meetings/      # 회의록
 ```

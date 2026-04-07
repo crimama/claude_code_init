@@ -105,6 +105,10 @@ cp -r "$SOURCE_DIR/base/contexts" "$TARGET/contexts"
 # templates/ directory (handoff, governance, decision-log, etc.)
 cp -r "$SOURCE_DIR/base/templates" "$TARGET/templates"
 
+if [ -d "$SOURCE_DIR/base/tools" ]; then
+    cp -r "$SOURCE_DIR/base/tools" "$TARGET/tools"
+fi
+
 # agents/ directory (base first, then preset overlay)
 cp -r "$SOURCE_DIR/base/agents" "$TARGET/agents"
 if [ -d "$SOURCE_DIR/presets/$PRESET/agents" ]; then
