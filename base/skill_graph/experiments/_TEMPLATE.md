@@ -1,3 +1,19 @@
+---
+id: YYYYMMDD_short-code
+title: [작업명]
+note_type: experiment
+status: planned
+keywords: []
+sources: []
+relations:
+  related_to: []
+  depends_on: []
+  derived_from: []
+  evidence_for: []
+last_verified: YYYY-MM-DD
+confidence: medium
+---
+
 # [작업명] — YYYY-MM-DD
 
 > **상태**: 🔴 계획 / 🟡 진행중 / 🟢 완료
@@ -95,3 +111,7 @@
 <!-- 스킬 그래프: 관련 노트 상대경로 링크 -->
 - 선행:
 - 후속:
+
+## schema 메모
+- relation 의미는 `../schema.md`를 따른다.
+- 본문 링크를 추가했다면 frontmatter `relations`도 함께 갱신한다.

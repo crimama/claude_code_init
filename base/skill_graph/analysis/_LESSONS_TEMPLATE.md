@@ -1,3 +1,18 @@
+---
+id: lesson-topic-id
+title: [주제명] — 검증된 패턴
+note_type: analysis
+status: approved
+keywords: []
+sources: []
+relations:
+  derived_from: []
+  supersedes: []
+  related_to: []
+last_verified: YYYY-MM-DD
+confidence: high
+---
+
 # [주제명] — 검증된 패턴
 
 > 실험 출처: `../../experiments/YYYY-MM-DD_xxx/report.md`
@@ -30,3 +45,7 @@
 ## 관련 노트
 <!-- 이 lessons를 도출한 실험/분석 노트 링크 -->
 -
+
+## schema 메모
+- 승격된 패턴은 source 실험/분석을 `relations.derived_from`에 남긴다.
+- 이전 임시 교훈을 대체하면 `relations.supersedes`를 사용한다.

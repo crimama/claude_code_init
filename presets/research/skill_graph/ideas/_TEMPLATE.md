@@ -1,3 +1,18 @@
+---
+id: idea-YYYYMMDD-short-title
+title: [아이디어명]
+note_type: idea
+status: proposed
+keywords: []
+sources: []
+relations:
+  related_to: []
+  tested_by: []
+  inspired_by: []
+last_verified: YYYY-MM-DD
+confidence: medium
+---
+
 # [아이디어명] — YYYY-MM-DD
 
 > **상태**: raw / screened / selected / rejected
@@ -33,3 +48,7 @@
 - papers:
 - analysis:
 - experiments:
+
+## schema 메모
+- 관련 논문/분석은 `relations.related_to` 또는 `relations.inspired_by`에 기록.
+- 실제 검증 실험은 `relations.tested_by`에 연결.

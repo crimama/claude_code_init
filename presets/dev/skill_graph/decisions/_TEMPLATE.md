@@ -1,3 +1,18 @@
+---
+id: adr-YYYYMMDD-short-title
+title: ADR: [결정 제목]
+note_type: decision
+status: proposed
+keywords: []
+sources: []
+relations:
+  related_to: []
+  supersedes: []
+  evidence_for: []
+last_verified: YYYY-MM-DD
+confidence: medium
+---
+
 # ADR: [결정 제목]
 
 **날짜**: YYYY-MM-DD
@@ -20,3 +35,7 @@
 
 ## 관련 노트
 <!-- 관련 skill_graph 링크 -->
+
+## schema 메모
+- 이전 결정을 대체하면 `relations.supersedes` 사용.
+- 이 결정을 지지하는 근거나 실험은 `relations.evidence_for`에 기록.
