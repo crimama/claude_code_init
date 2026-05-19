@@ -1,0 +1,28 @@
+{
+  "project": "PROJECT_NAME",
+  "updated": "YYYY-MM-DD",
+  "features": [
+    {
+      "id": "feat-01",
+      "title": "기능 이름",
+      "priority": 1,
+      "status": "pending",
+      "description": "기능 한 줄 설명",
+      "validation": [
+        "pytest tests/test_feature.py",
+        "mypy src/feature.py"
+      ],
+      "acceptance_criteria": [
+        "조건 1",
+        "조건 2"
+      ],
+      "notes": ""
+    }
+  ],
+  "_status_values": ["pending", "in_progress", "done", "blocked"],
+  "_rules": [
+    "한 번에 하나의 기능만 in_progress 상태",
+    "validation 명령어는 실제로 실행 가능해야 함",
+    "done으로 변경하려면 validation 전체 통과 필수"
+  ]
+}

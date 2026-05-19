@@ -2,13 +2,25 @@
 
 This file provides guidance to Codex when working in this repository. It mirrors the existing Claude setup in `CLAUDE.md` and `.claude/skills/`.
 
+## Bootstrap Contract
+
+Before starting any work, verify the repository satisfies all four conditions:
+
+1. **Runnable**: standard start command succeeds (see `CLAUDE.md` Commands section)
+2. **Testable**: at least one test passes
+3. **Trackable**: `tasks/todo.md` and `handoff.md` exist and are current
+4. **Actionable**: next steps are clear from `handoff.md` or `feature_list.json`
+
+If any condition is unmet, establish it before implementing features.
+
 ## First Read
 
 At the start of each meaningful task, review these files in order:
 
 1. `CLAUDE.md`
-2. `tasks/lessons.md`
-3. `tasks/todo.md`
+2. `handoff.md` (or `tasks/todo.md` if handoff is absent)
+3. `feature_list.json` (if present — check which feature is `in_progress`)
+4. `tasks/lessons.md`
 
 Treat `CLAUDE.md` as the primary project playbook unless a direct user instruction overrides it.
 
@@ -45,15 +57,25 @@ When the user corrects your approach or a recurring mistake becomes clear, recor
 
 If a lesson becomes a repeated, validated pattern, promote it into `skill_graph/analysis/<topic>/_lessons.md`.
 
-### 3. Verification
+### 3. Verification (3-Stage Exit Check)
 
-Do not finish on intent alone. Verify with the strongest practical signal available, such as:
+Do not mark work complete on intent alone. Pass all three stages in order:
 
-- running the relevant command or experiment entrypoint
-- checking logs or generated artifacts
-- confirming config wiring and execution path
+1. **Static analysis**: lint and type check must pass
+2. **Runtime validation**: run the relevant command/entrypoint and confirm output
+3. **System check**: end-to-end flow or integration test passes
 
-If full verification is too heavy, state exactly what was and was not verified.
+If a stage cannot be run, explicitly state what was and was not verified.
+
+Before closing the session, run through `templates/clean-state-checklist.md`.
+
+### 4. Feature Tracking
+
+When `feature_list.json` exists:
+
+- Only one feature may have `"status": "in_progress"` at a time
+- Before marking a feature `"done"`, all commands listed in its `"validation"` array must pass
+- Update `feature_list.json` at the end of each session
 
 ## Agents and Contexts
 
@@ -95,3 +117,15 @@ Codex cannot auto-register the local `.claude/skills/*` files as native skills, 
 - `.claude/skills/checkpoint/SKILL.md`: git-based checkpoint management
 - `.claude/skills/compact/SKILL.md`: strategic compaction guide
 - `.claude/skills/learn/SKILL.md`: session learning pipeline
+
+## Harness Templates
+
+Ready-to-use templates in `templates/`:
+
+| Template | Purpose |
+|----------|---------|
+| `feature_list.json` | Cross-session feature tracking with validation steps |
+| `clean-state-checklist.md` | Session-end checklist (build, tests, artifacts, state) |
+| `handoff.md` | Structured session handoff (verified items, changes, issues, next actions) |
+| `decision-log.md` | Human-approved decision records |
+| `work-log.md` | Session activity log |

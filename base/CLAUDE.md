@@ -77,16 +77,18 @@ Input → Processing → Output
 
 ```
 project/
-├── plan.md          # 현재 작업 계획 — 제약, 할 일, 바지 않을 입출력
-├── handoff.md       # 인수인계 상태 — 어디까지 했는지, 다음에 볼 파일
-├── outputs/         # 최종 산출물 모아두는 곳
-├── decision-log.md  # 의사결정 기록 (선택)
-└── work-log.md      # 작업 이력 (선택)
+├── plan.md                    # 현재 작업 계획 — 제약, 할 일, 입출력
+├── handoff.md                 # 인수인계 상태 — 어디까지 했는지, 다음 액션
+├── feature_list.json          # 크로스-세션 기능 추적 (기능별 status + validation)
+├── outputs/                   # 최종 산출물
+├── decision-log.md            # 의사결정 기록 (선택)
+└── work-log.md                # 작업 이력 (선택)
 ```
 
 **규칙:**
 - 3단계 이상 작업은 `plan.md` 먼저 작성
-- 세션 종료 전 `handoff.md` 갱신 필수
+- 세션 종료 전 `handoff.md` 갱신 + `templates/clean-state-checklist.md` 실행 필수
+- `feature_list.json` — 한 번에 하나만 `in_progress`, done 전환은 validation 전체 통과 필수
 - 사람이 최종 승인하는 결정은 `decision-log.md`에 기록
 - 템플릿: `templates/` 디렉토리 참조
 
@@ -160,10 +162,14 @@ project/
 - 세션 시작 시 `tasks/lessons.md`를 먼저 확인하여 과거 교훈 리뷰
 - 반복 검증된 패턴은 `skill_graph/analysis/{주제}/_lessons.md`로 승격
 
-### 4. Verification Before Done
+### 4. Verification Before Done (3-Stage Exit Check)
 - **작동을 증명하지 않은 채 완료 처리 금지**
+- 완료 선언 전 아래 3단계를 순서대로 통과할 것:
+  1. **정적 분석**: lint, type check 통과
+  2. **런타임 검증**: 실제 실행 후 로그/출력 확인
+  3. **시스템 확인**: 엔드투엔드 흐름 또는 통합 테스트 통과
 - "시니어 엔지니어가 이 코드를 승인할 것인가?" 자문
-- 테스트 실행, 로그 확인, 정확성 시연 후 완료
+- 완료 전 `templates/clean-state-checklist.md` 체크리스트 실행
 
 ### 5. Demand Elegance (Balanced)
 - 비자명한 변경에는 "더 우아한 방법이 있지 않은가?" 자문
